@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dos Puntos. Una Historia. 📍</title>
+    <link rel="stylesheet" href="tiempo.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Fondo decorativo -->
+    <div class="decoracion-fondo" id="contenedorPetalos"></div>
+
+    <!-- BOTÓN SALTAR -->
+    <button id="btnSaltarNarrativa" class="btn-saltar">Omitir <span>›</span></button>
+
+    <!-- ESCENA PRINCIPAL -->
+    <div class="escena-tiempo" id="escenaTiempo">
+
+        <!-- ELEMENTOS DINÁMICOS -->
+        <div class="mapa-container">
+            <!-- Canadá SVG -->
+            <svg class="svg-mapa canada" viewBox="0 0 1000 647" preserveAspectRatio="xMidYMid meet">
+                <path class="tierra"
+                    d="M591.4,51.9 L591.3,73.8 L607.0,57.0 L621.0,70.8 L617.5,86.6 L628.8,101.1 L641.1,85.6 L649.6,67.1 L650.3,43.6 L666.9,45.3 L684.2,48.4 L700.0,59.0 L700.7,69.7 L692.0,81.1 L700.2,92.5 L698.7,103.0 L675.8,117.9 L659.5,121.2 L647.4,114.8 L643.9,125.5 L632.6,143.6 L629.1,152.9 L615.5,167.4 L598.8,168.8 L589.5,177.9 L588.7,191.8 L575.1,194.5 L560.8,211.8 L548.0,235.9 L543.5,252.8 L542.9,277.7 L560.1,281.2 L565.4,301.3 L570.8,317.5 L587.2,313.3 L609.0,322.6 L620.7,330.7 L629.1,340.8 L643.8,346.7 L656.2,355.7 L675.6,356.9 L688.3,359.0 L686.4,377.5 L690.1,399.1 L698.6,423.0 L716.0,443.3 L725.0,436.4 L731.4,414.4 L725.2,380.6 L717.0,369.3 L735.7,359.3 L749.0,344.3 L755.5,329.3 L754.6,315.0 L746.6,296.9 L732.4,280.7 L746.2,258.3 L741.1,238.9 L737.2,205.5 L745.3,200.6 L765.4,206.4 L777.5,208.5 L787.2,202.9 L798.1,210.1 L812.5,222.5 L816.1,230.8 L837.0,232.4 L836.6,250.4 L840.5,277.5 L851.2,280.8 L859.7,293.4 L876.7,281.5 L887.9,257.9 L895.7,248.0 L904.8,267.1 L920.1,294.4 L933.0,320.1 L928.3,333.5 L943.9,345.6 L954.4,357.8 L973.1,363.4 L980.7,370.2 L985.3,388.3 L994.4,391.1 L999.1,399.2 L1000,423.3 L991.5,431.3 L983.1,438.8 L963.8,446.4 L949.0,464.0 L929.2,467.5 L904.1,463.0 L886.5,462.8 L874.4,464.3 L864.6,479.7 L849.6,489.2 L832.7,517.5 L819.2,537.2 L829.2,533.7 L848.0,505.6 L872.6,487.8 L890.1,485.6 L900.5,496.1 L889.4,510.5 L893.2,533.6 L897.0,549.7 L912.2,560.4 L931.6,557.3 L943.3,533.3 L944.1,548.8 L951.7,556.5 L937.2,570.6 L911.3,583.3 L899.6,592.0 L886.5,607.4 L877.6,605.8 L877.2,587.7 L897.5,570.0 L878.8,570.7 L865.7,573.3 L858.1,561.2 L858.1,532.0 L852.9,525.8 L845.0,529.5 L841.1,523.8 L832.2,540.0 L828.6,556.7 L824.5,566.4 L819.5,569.7 L815.7,570.8 L814.5,576.1 L792.9,576.1 L775.1,576.2 L769.9,580.2 L757.5,595.6 L756.0,597.2 L752.2,605.6 L741.5,605.6 L730.0,605.7 L724.7,609.1 L726.6,613.3 L727.6,619.8 L727.4,622.0 L712.1,632.6 L700.0,636.0 L686.4,647.4 L683.4,647.4 L679.5,644.0 L678.1,641.0 L678.4,638.7 L681.0,631.2 L686.5,619.5 L689.9,606.8 L687.6,588.2 L685.1,568.8 L672.9,558.8 L674.3,554.9 L672.6,552.3 L669.4,552.3 L667.0,548.9 L666.4,543.9 L664.1,546.1 L661.0,545.4 L661.7,543.3 L659.0,541.2 L657.8,535.6 L648.7,528.7 L639.2,521.6 L627.8,513.3 L616.8,505.5 L606.3,511.6 L602.5,511.8 L588.0,506.2 L578.5,509.0 L567.2,502.4 L555.2,499.0 L547.0,497.7 L543.4,494.0 L541.3,482.3 L537.3,482.4 L537.3,490.6 L513.0,490.6 L472.9,490.6 L433.1,490.6 L397.9,490.6 L362.7,490.6 L328.2,490.6 L292.4,490.6 L280.9,490.6 L246.1,490.6 L212.8,490.6 L211.3,490.6 L188.6,469.5 L180.2,460.3 L159.0,451.4 L152.4,432.5 L154.1,419.3 L139.1,410.2 L137.1,393.0 L122.9,377.4 L122.6,366.4 L129.1,356.1 L128.8,342.6 L108.9,329.0 L96.9,304.5 L89.6,289.2 L78.8,279.5 L70.9,270.8 L64.7,259.7 L53.0,266.6 L41.6,278.6 L31.1,264.5 L23.0,255.2 L11.5,249.2 L0,248.6 L0.1,126.7 L0.1,47.3 L22.0,52.4 L40.5,62.7 L52.7,64.7 L63.0,55.8 L77.2,49.1 L94.6,51.7 L112.1,42.3 L131.3,37.0 L139.4,45.8 L148.1,40.8 L150.7,30.8 L158.8,33.0 L178.7,52.2 L194.3,37.7 L195.8,54.0 L210.2,50.4 L214.7,44.2 L228.9,45.4 L246.8,54.4 L274.2,62.3 L290.4,65.9 L301.8,64.5 L317.6,75.4 L301.2,86.0 L322.3,90.6 L354.0,88.1 L364.0,84.3 L376.5,97.2 L389.2,86.3 L377.2,77.2 L384.8,69.9 L399.1,68.9 L408.5,66.8 L417.9,71.9 L429.7,83.5 L442.8,81.8 L463.5,91.5 L481.7,88.1 L498.8,88.6 L497.4,75.3 L507.9,71.5 L526.0,78.8 L526.0,99.0 L533.4,82.0 L542.8,82.6 L548.1,61.0 L535.6,47.8 L521.9,39.2 L522.8,15.5 L536.7,0.0 L552.2,3.4 L564.0,12.9 L580.0,37.0 L569.6,47.5 L591.4,51.9 Z" />
+            </svg>
+
+            <!-- RD SVG -->
+            <svg class="svg-mapa rd" viewBox="0 0 1000 666" preserveAspectRatio="xMidYMid meet">
+                <path class="tierra"
+                    d="M103.79,75.37 L135.13,30.26 L330.78,31.48 L479.24,99.61 L545.29,92.96 L590.80,186.84 L727.93,181.57 L719.85,260.44 L831.37,270.00 L954.55,367.10 L861.47,474.84 L742.26,417.27 L627.21,428.37 L544.76,415.77 L499.57,464.04 L403.35,480.35 L365.22,416.15 L282.34,454.14 L182.03,635.38 L117.50,593.29 L104.81,517.22 L109.96,445.32 L45.45,365.86 L106.56,321.26 L125.72,219.51 L103.79,75.37 Z" />
+            </svg>
+
+            <!-- Puntos -->
+            <div id="puntoA" class="punto-luminoso" style="left: 80%; top: 82%;">
+                <span class="label-punto" style="top:-6px; left: 40px;">Yo (RD)</span>
+            </div>
+            <div id="puntoB" class="punto-luminoso" style="left: 20%; top: 20%;">
+                <span class="label-punto">Tú (Canadá)</span>
+            </div>
+
+            <!-- Línea SVG con path en coords (0,0) a (100,100) mapeado sobre los div x/y -->
+            <svg class="linea-conexion" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path id="rutaConexion" d="" fill="none" stroke="currentColor" stroke-width="0.5" />
+            </svg>
+        </div>
+
+        <!-- NARRATIVA -->
+        <div class="mensaje-container">
+            <p id="textoNarrativo" class="texto-principal"></p>
+        </div>
+
+        <!-- CONTADORES -->
+        <div class="dashboard-distancia">
+            <div class="counter-item">
+                <span class="label">Distancia física:</span>
+                <span id="distanciaFisica" class="valor">0 km</span>
+            </div>
+            <div class="counter-item">
+                <span class="label">Distancia emocional:</span>
+                <span id="distanciaEmocional" class="valor">—</span>
+            </div>
+            <div id="distanciaFuturaContainer" class="counter-item extra hide">
+                <span class="label">Distancia futura:</span>
+                <span id="distanciaFutura" class="valor">0 km</span>
+            </div>
+        </div>
+
+        <!-- CUENTA REGRESIVA -->
+        <div id="countdownContainer" class="countdown-container hide">
+            <p class="contador-label">Tiempo para volver a vernos:</p>
+            <div class="reloj-vibrante">
+                <div class="tiempo-unidad">
+                    <span id="dias" class="t-val">00</span>
+                    <span class="t-lab">Días</span>
+                </div>
+                <div class="tiempo-unidad">
+                    <span id="horas" class="t-val">00</span>
+                    <span class="t-lab">Hrs</span>
+                </div>
+                <div class="tiempo-unidad">
+                    <span id="minutos" class="t-val">00</span>
+                    <span class="t-lab">Min</span>
+                </div>
+                <div class="tiempo-unidad">
+                    <span id="segundos" class="t-val">00</span>
+                    <span class="t-lab">Seg</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTONAERA FINAL -->
+        <div id="controlesFinales" class="controles-finales hide">
+            <div class="btn-group">
+                <a href="../Menu/menu.html" class="btn-regresar">Volver al menú</a>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="tiempo.js"></script>
+</body>
+
+</html>

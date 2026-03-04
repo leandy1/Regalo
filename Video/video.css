@@ -1,0 +1,274 @@
+/* =====================
+   CINEMATIC VIDEO - DISEÑO ELEGANTE Y ROMÁNTICO
+   ===================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap');
+
+:root {
+    --color-fondo: #0f0505;
+    /* Un negro rojizo muy profundo */
+    --color-primario: #ffafbd;
+    /* Rosa suave */
+    --color-secundario: #f7e7ce;
+    /* Oro champán */
+    --color-texto: #fff5f5;
+    --color-subtexto: #d4a5a5;
+    --shadow-romantic: 0 0 30px rgba(255, 175, 189, 0.2);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    opacity: 1;
+}
+
+/* --- FONDO DE PÉTALOS Y ESTRELLAS --- */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background:
+        radial-gradient(ellipse at center, transparent 0%, var(--color-fondo) 100%),
+        url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');
+    /* Sutil textura */
+    z-index: -2;
+}
+
+.decoracion-fondo {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.petalo {
+    position: absolute;
+    background: radial-gradient(circle at center, #ffafbd, #ffc3a0);
+    border-radius: 50% 0 50% 50%;
+    opacity: 0.3;
+    animation: floatingPetals 15s linear infinite;
+}
+
+@keyframes floatingPetals {
+    0% {
+        transform: translate(0, -10%) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.3;
+    }
+
+    90% {
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translate(100vw, 110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* --- OVERLAY CINEMÁTICO --- */
+.overlay-cine {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 40%, rgba(15, 5, 5, 0.9) 100%);
+    pointer-events: none;
+    z-index: 5;
+    transition: background 2s ease;
+}
+
+body.reproduciendo .overlay-cine {
+    background: rgba(0, 0, 0, 0.96);
+}
+
+/* --- BOTÓN VOLVER --- */
+.btn-volver {
+    position: fixed;
+    top: 40px;
+    left: 40px;
+    z-index: 100;
+    color: var(--color-subtexto);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.7;
+    padding: 10px;
+}
+
+.btn-volver:hover {
+    color: var(--color-primario);
+    opacity: 1;
+    transform: translateX(-5px);
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.contenedor-cinematico {
+    width: 90%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+}
+
+/* --- ENCABEZADO --- */
+.encabezado-video {
+    text-align: center;
+    margin-bottom: 50px;
+    animation: fadeUp 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.titulo {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 700;
+    margin: 0;
+    color: var(--color-secundario);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5), 0 0 20px rgba(247, 231, 206, 0.2);
+}
+
+.subtitulo {
+    font-family: 'Dancing Script', cursive;
+    font-size: 28px;
+    color: var(--color-primario);
+    margin-top: 5px;
+    letter-spacing: 1px;
+}
+
+/* --- REPRODUCTOR VERTICAL --- */
+.area-reproductor {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    animation: playerReveal 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.marco-video {
+    position: relative;
+    width: 320px;
+    /* Tamaño ideal para vertical en desktop */
+    aspect-ratio: 9 / 16;
+    background: #000;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow:
+        0 40px 100px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(255, 175, 189, 0.1),
+        0 0 40px rgba(255, 175, 189, 0.05);
+    transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.marco-video::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(247, 231, 206, 0.2);
+    border-radius: 24px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.marco-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+}
+
+body.reproduciendo .marco-video {
+    transform: scale(1.05);
+    box-shadow: 0 50px 120px rgba(0, 0, 0, 0.95), 0 0 60px rgba(255, 175, 189, 0.15);
+}
+
+/* --- FOOTER / FRASE FINAL --- */
+.final-video {
+    margin-top: 50px;
+    height: 40px;
+}
+
+.frase-emocional {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-style: italic;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 2.5s ease;
+    color: var(--color-primario);
+    text-shadow: 0 0 15px rgba(255, 175, 189, 0.4);
+}
+
+.frase-emocional.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- MEDIA QUERIES --- */
+@media (max-height: 800px) {
+    .marco-video {
+        width: 280px;
+    }
+
+    .titulo {
+        font-size: 40px;
+    }
+
+    .subtitulo {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 500px) {
+    .marco-video {
+        width: 85vw;
+    }
+}
+
+/* --- ANIMACIONES --- */
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes playerReveal {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+body.reproduciendo .encabezado-video {
+    opacity: 0.05;
+    transition: opacity 3s ease;
+}

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Un cuento inesperado</title>
+  <link rel="stylesheet" href="historia.css">
+</head>
+
+<body>
+
+  <div class="escena" id="escenaPrincipal">
+    <!-- BOTÓN SALTAR (SUTIL) -->
+    <a href="../Menu/menu.html" class="btn-saltar">Omitir <span>›</span></a>
+
+    <!-- FONDOS PARALLAX Y ATMÓSFERA -->
+    <div class="cielo-profundo"></div>
+    <div class="capa-estrellas" id="estrellasFijas"></div>
+    <div class="astro astro-luz" id="astroCielo"></div>
+
+    <!-- Paisaje Premium de Montañas en SVG -->
+    <svg class="montanas-premium" viewBox="0 0 1000 300" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="gradMontana1" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:currentColor; stop-opacity:0.8" />
+          <stop offset="100%" style="stop-color:currentColor; stop-opacity:0.2" />
+        </linearGradient>
+        <linearGradient id="gradMontana2" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" style="stop-color:currentColor; stop-opacity:1" />
+          <stop offset="100%" style="stop-color:currentColor; stop-opacity:0.4" />
+        </linearGradient>
+      </defs>
+      <!-- Capa atrás -->
+      <path class="montana-fondo" d="M0,300 L0,200 L150,50 L300,220 L450,120 L650,280 L800,80 L1000,250 L1000,300 Z"
+        fill="url(#gradMontana1)" />
+      <!-- Capa frente -->
+      <path class="montana-frente"
+        d="M0,300 L0,250 L80,150 L250,280 L380,180 L500,300 L700,160 L900,290 L1000,200 L1000,300 Z"
+        fill="url(#gradMontana2)" />
+    </svg>
+
+    <div class="bosque-niebla"></div>
+    <div class="suelo-escenario"></div>
+
+    <div id="contenedorParticulas" class="capa-particulas"></div>
+
+    <div class="hilo-rojo" id="hiloRelacion" style="display: none;"></div>
+
+    <div class="muro-hielo" id="muroDistancia">
+      <svg width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 50 1000">
+        <path d="M25,0 Q10,150 25,300 T20,600 T30,900 T25,1000" fill="none" class="grieta-svg" />
+      </svg>
+    </div>
+
+    <!-- PRÍNCIPE (CARTOON PREMIUM) -->
+    <div class="personaje principe">
+      <div class="sombra-personaje"></div>
+      <div class="cartoon-cuerpo princ">
+        <div class="cartoon-capa"></div>
+
+        <div class="cartoon-piernas">
+          <div class="cartoon-pierna izq"></div>
+          <div class="cartoon-pierna der"></div>
+        </div>
+
+        <div class="cartoon-torso princ-torso">
+          <div class="cartoon-cinturon">
+            <div class="cartoon-hebilla"></div>
+          </div>
+          <div class="cartoon-medalla"></div>
+        </div>
+
+        <div class="cartoon-cabeza princ-cabeza">
+          <div class="cartoon-cuello"></div>
+          <div class="cartoon-pelo-atras"></div>
+          <div class="cartoon-rostro">
+            <div class="cartoon-oreja"></div>
+            <div class="cartoon-ojo princ-ojo"></div>
+            <div class="cartoon-pelo-frente"></div>
+          </div>
+          <div class="cartoon-corona"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRINCESA (CARTOON PREMIUM) -->
+    <div class="personaje princesa">
+      <div class="sombra-personaje"></div>
+      <div class="cartoon-cuerpo prin">
+
+        <div class="cartoon-pelo-largo-atras"></div>
+
+        <div class="cartoon-falda prin-falda">
+          <div class="cartoon-pliegue p1"></div>
+          <div class="cartoon-pliegue p2"></div>
+        </div>
+
+        <div class="cartoon-torso prin-torso"></div>
+
+        <div class="cartoon-cabeza prin-cabeza">
+          <div class="cartoon-cuello"></div>
+          <div class="cartoon-rostro">
+            <div class="cartoon-oreja"></div>
+            <div class="cartoon-ojo prin-ojo"></div>
+            <div class="cartoon-rubor"></div>
+            <div class="cartoon-pelo-frente prin-pelo"></div>
+          </div>
+          <div class="cartoon-pelo-hombro"></div>
+          <div class="cartoon-corona prin-corona"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contenedor-texto">
+      <div class="decoracion-texto izq">❧</div>
+      <p id="historiaTexto" class="texto"></p>
+      <div class="decoracion-texto der">☙</div>
+    </div>
+
+    <div class="luz-ambiental" id="luzFiltro"></div>
+  </div>
+
+  <script src="historia.js"></script>
+</body>
+
+</html>

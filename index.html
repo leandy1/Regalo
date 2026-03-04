@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Solo tú ❤️</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- FONDO ESTELAR ANIMADO Y PARALLAX -->
+  <div class="cielo-profundo"></div>
+  <div class="capa-estrellas"></div>
+  <div class="luciernagas-fondo" id="luciernagasForm"></div>
+
+  <!-- CONTENEDOR PORTAL (GLASSMORPHISM) -->
+  <div class="contenedor fade-in">
+
+    <!-- BARRA DE PROGRESO NARRATIVA -->
+    <div class="barra-progreso">
+      <div class="progreso-fill" id="progreso-fill"></div>
+    </div>
+
+    <h1 id="titulo" class="titulo-narrativo"></h1>
+    <p id="intro" class="texto-narrativo"></p>
+
+    <!-- ÁREA DINÁMICA DE PREGUNTAS -->
+    <div id="contenedor-pregunta" class="contenedor-dinamico">
+      <!-- Se inyecta por JS -->
+    </div>
+
+    <!-- BOTÓN DE ACCIÓN -->
+    <button id="btn-responder" style="display: none;">Responder</button>
+
+    <!-- MENSAJE FINAL CINEMÁTICO -->
+    <div id="mensaje" style="display: none;"></div>
+
+  </div>
+
+  <script src="index.js"></script>
+</body>
+
+</html>

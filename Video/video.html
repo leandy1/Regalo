@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancion </title>
+    <link rel="stylesheet" href="video.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;1,700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Fondo decorativo -->
+    <div class="decoracion-fondo" id="contenedorPetalos"></div>
+
+    <!-- Capa de oscurecimiento dinámico -->
+    <div class="overlay-cine"></div>
+
+    <!-- Botón volver -->
+    <a href="../Menu/menu.html" class="btn-volver">
+        <svg viewBox="0 0 24 24" width="20" height="20">
+            <path fill="currentColor" d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" />
+        </svg>
+        <span>Volver al Menú</span>
+    </a>
+
+    <main class="contenedor-cinematico">
+        <header class="encabezado-video">
+            <h1 class="titulo">Lo que prometí</h1>
+            <p class="subtitulo">Nuestra canción</p>
+        </header>
+
+        <section class="area-reproductor">
+            <div class="marco-video">
+                <video id="reproductorPrincipal" controls poster="">
+                    <!-- Reemplaza 'nuestro_video.mp4' con la ruta real de tu video -->
+                    <source src="vid.mp4" type="video/mp4">
+                    Tu navegador no soporta el formato de video.
+                </video>
+
+
+            </div>
+        </section>
+
+        <footer class="final-video">
+            <p id="mensajeFinal" class="frase-emocional">Y lo mejor… aún no lo hemos grabado.</p>
+        </footer>
+    </main>
+
+    <script src="video.js"></script>
+</body>
+
+</html>

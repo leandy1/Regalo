@@ -1,0 +1,374 @@
+/* =====================
+   NUESTRO TIEMPO - DOS PUNTOS. UNA HISTORIA.
+   ===================== */
+
+:root {
+    --bg: #0f0505;
+    /* Negro rojizo profundo */
+    --accent: #ffafbd;
+    /* Rosa suave */
+    --accent-gold: #f7e7ce;
+    /* Oro champán */
+    --glow: rgba(255, 175, 189, 0.4);
+    --text-main: #fff5f5;
+    --text-dim: #d4a5a5;
+    --map-land: rgba(255, 175, 189, 0.05);
+    --map-border: rgba(247, 231, 206, 0.2);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 100vh;
+    position: relative;
+}
+
+/* --- FONDO DE PÉTALOS Y ESTRELLAS --- */
+.decoracion-fondo {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background:
+        radial-gradient(ellipse at center, transparent 0%, var(--bg) 100%),
+        url('https://www.transparenttextures.com/patterns/pinstriped-suit.png');
+    /* Sutil textura */
+}
+
+.petalo {
+    position: absolute;
+    background: radial-gradient(circle at center, #ffafbd, #ffc3a0);
+    border-radius: 50% 0 50% 50%;
+    opacity: 0.3;
+    animation: floatingPetals 15s linear infinite;
+}
+
+@keyframes floatingPetals {
+    0% {
+        transform: translate(0, -10%) rotate(0deg);
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.3;
+    }
+
+    90% {
+        opacity: 0.3;
+    }
+
+    100% {
+        transform: translate(100vw, 110vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.cielo-profundo {
+    display: none;
+    /* Reemplazado por decoracion-fondo */
+}
+
+/* --- ESCENA --- */
+.escena-tiempo {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding: 60px 20px;
+    box-sizing: border-box;
+}
+
+/* --- MAPA Y PUNTOS --- */
+.mapa-container {
+    width: 600px;
+    height: 600px;
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.svg-mapa {
+    position: absolute;
+    z-index: 1;
+    opacity: 0.9;
+}
+
+.svg-mapa.canada {
+    top: 5%;
+    left: 5%;
+    width: 65%;
+    height: auto;
+}
+
+.svg-mapa.rd {
+    bottom: 12%;
+    right: 12%;
+    width: 30%;
+    height: auto;
+}
+
+.tierra {
+    fill: var(--map-land);
+    stroke: var(--accent);
+    stroke-width: 4;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    stroke-opacity: 0.5;
+    filter: drop-shadow(0 0 12px rgba(212, 165, 255, 0.2));
+}
+
+.punto-luminoso {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px var(--glow), 0 0 20px var(--glow);
+    z-index: 10;
+    transition: all 2.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.label-punto {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.linea-conexion {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    overflow: visible;
+}
+
+#rutaConexion {
+    stroke: var(--accent);
+    stroke-opacity: 0.4;
+    stroke-width: 1.5;
+    stroke-dasharray: 4 6;
+    transition: all 2s ease;
+}
+
+#rutaConexion.iluminada {
+    stroke-opacity: 0.4;
+    stroke-width: 2;
+}
+
+#rutaConexion.solida {
+    stroke-opacity: 0.9;
+    stroke-width: 3;
+    filter: drop-shadow(0 0 8px var(--accent));
+}
+
+#rutaConexion.punteada {
+    stroke-dasharray: 5 5;
+    stroke-opacity: 0.6;
+}
+
+/* --- CONTADORES --- */
+.dashboard-distancia {
+    display: flex;
+    gap: 60px;
+    margin-bottom: 40px;
+}
+
+.counter-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.counter-item .label {
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.counter-item .valor {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-main);
+    font-variant-numeric: tabular-nums;
+}
+
+/* --- CUENTA REGRESIVA --- */
+.countdown-container {
+    margin-bottom: 40px;
+    animation: fadeIn 2s ease;
+    text-align: center;
+}
+
+.contador-label {
+    font-size: 12px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 20px;
+}
+
+.reloj-vibrante {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+}
+
+.tiempo-unidad {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+}
+
+.t-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 20px var(--glow);
+}
+
+.t-lab {
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 8px;
+}
+
+/* --- MENSAJES --- */
+.mensaje-container {
+    min-height: 80px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.texto-principal {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-style: italic;
+    color: var(--accent);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.8s ease;
+    text-align: center;
+    margin: 0;
+}
+
+.texto-principal.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- CIERRE --- */
+.controles-finales {
+    margin-top: 40px;
+    text-align: center;
+    transition: all 1s ease;
+    padding-bottom: 60px;
+    /* Espacio al final */
+}
+
+.frase-cierre {
+    font-family: 'Dancing Script', cursive;
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: var(--text-main);
+}
+
+.btn-regresar {
+    display: inline-block;
+    padding: 12px 35px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 11px;
+    border-radius: 40px;
+    transition: all 0.4s ease;
+}
+
+.btn-regresar:hover {
+    background: var(--accent);
+    color: var(--bg);
+    box-shadow: 0 0 20px var(--glow);
+}
+
+/* --- UTILIDADES --- */
+.hide {
+    display: none !important;
+}
+
+@media (max-width: 600px) {
+    .mapa-container {
+        width: 350px;
+        height: 350px;
+    }
+
+    .dashboard-distancia {
+        gap: 20px;
+        flex-direction: column;
+    }
+
+    .texto-principal {
+        font-size: 20px;
+    }
+}
+
+/* --- BOTÓN OMITIR (SUTIL) --- */
+.btn-saltar {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    z-index: 1000;
+    color: rgba(255, 255, 255, 0.4);
+    text-decoration: none;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    padding: 5px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.btn-saltar span {
+    margin-left: 5px;
+    font-size: 16px;
+}
+
+.btn-saltar:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(255, 175, 189, 0.05);
+    transform: translateX(-3px);
+}
+
+.btn-saltar.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
