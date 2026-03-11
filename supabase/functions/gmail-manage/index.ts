@@ -104,9 +104,15 @@ serve(async (req) => {
 
     throw new Error("Invalid action")
   } catch (err) {
-    console.error("Function Error:", err.message);
-    return new Response(JSON.stringify({ error: err.message }), { 
-      status: 400,
+    const errorMsg = err instanceof Error ? err.message : String(err);
+    console.error("Function Error:", errorMsg);
+    
+    // Devolvemos 200 con success: false para que Supabase no oculte el detalle del error en un 400 genérico
+    return new Response(JSON.stringify({ 
+      success: false, 
+      error: errorMsg 
+    }), { 
+      status: 200, 
       headers: { ...corsHeaders, "Content-Type": "application/json" } 
     })
   }

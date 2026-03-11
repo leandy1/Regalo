@@ -62,11 +62,17 @@ window.onload = async () => {
                         const { data, error } = await supabase.functions.invoke('gmail-manage', {
                             body: { action: 'empty_trash', user_email: currentUser.email }
                         });
+                        
+                        console.log("Respuesta de Vaciar Papelera:", { data, error });
+
                         if (error) throw error;
+                        if (data && data.success === false) throw new Error(data.error);
+
                         alert("Papelera vaciada correctamente.");
                         fetchEmails(currentUser);
                     } catch (e) {
-                        alert("Error: " + e.message);
+                        console.error("Error capturado:", e);
+                        alert("Error al vaciar papelera: " + (e.message || "Revisa la consola"));
                     } finally {
                         btnTrash.disabled = false;
                         btnTrash.innerText = "Vaciar Papelera";
