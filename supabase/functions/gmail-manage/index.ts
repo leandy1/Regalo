@@ -87,18 +87,24 @@ serve(async (req) => {
       if (tokenData.error) throw new Error("Token refresh failed")
 
       // 3. Vaciar papelera en Gmail (permanente)
+      console.log("Intentando vaciar papelera para:", user_email);
       const emptyResp = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/emptyTrash`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${tokenData.access_token}` }
       })
 
-      if (!emptyResp.ok) throw new Error("Failed to empty trash in Gmail")
+      if (!emptyResp.ok) {
+        const errorText = await emptyResp.text();
+        console.error("Gmail API Error (Empty Trash):", errorText);
+        throw new Error(`Gmail API failed: ${emptyResp.status} - ${errorText}`);
+      }
 
       return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
     }
 
     throw new Error("Invalid action")
   } catch (err) {
+    console.error("Function Error:", err.message);
     return new Response(JSON.stringify({ error: err.message }), { 
       status: 400,
       headers: { ...corsHeaders, "Content-Type": "application/json" } 
