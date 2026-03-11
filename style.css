@@ -1,0 +1,433 @@
+/* =====================
+   ESTILO BASE Y FONDO MÁGICO
+===================== */
+body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(circle at 50% 120%, #1a1025 0%, #0d0914 50%, #050308 100%);
+  font-family: 'Georgia', serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  color: #fff8f0;
+}
+
+/* --- CIELO PROFUNDO Y ESTRELLAS --- */
+.cielo-profundo {
+  position: absolute;
+  inset: -10%;
+  background: radial-gradient(circle at 50% 100%, #2b1d3d 0%, transparent 60%);
+  z-index: 0;
+}
+
+.capa-estrellas {
+  position: absolute;
+  inset: -50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 1px, transparent 1px);
+  background-size: 100px 100px;
+  animation: sutilRotacionCielo 250s linear infinite;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+@keyframes sutilRotacionCielo {
+  0% {
+    transform: scale(1.2) rotate(0deg);
+  }
+
+  100% {
+    transform: scale(1.2) rotate(360deg);
+  }
+}
+
+/* =====================
+   CONTENEDOR GLASSMORPHISM
+===================== */
+.contenedor {
+  position: relative;
+  background: rgba(20, 15, 30, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 40px;
+  border-radius: 20px;
+  width: 400px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.05);
+  z-index: 10;
+}
+
+.contenedor h1.titulo-narrativo {
+  font-size: 24px;
+  color: #fbc531;
+  text-shadow: 0 0 15px rgba(251, 197, 49, 0.5);
+  margin-bottom: 20px;
+  min-height: 55px;
+  font-style: italic;
+  font-family: 'Times New Roman', serif;
+}
+
+.texto-narrativo {
+  font-size: 16px;
+  color: #dfdfe5;
+  margin-bottom: 20px;
+}
+
+/* =====================
+   BARRA DE PROGRESO
+===================== */
+.barra-progreso {
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  margin-bottom: 25px;
+  overflow: hidden;
+  position: relative;
+  transition: opacity 1s;
+}
+
+.progreso-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #fbc531, #e1b12c);
+  box-shadow: 0 0 10px #fbc531;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =====================
+   TRANSICIONES DINÁMICAS
+===================== */
+.contenedor-dinamico {
+  min-height: 150px;
+  transition: all 0.4s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.slide-in {
+  animation: slideIn 0.5s forwards ease-out;
+}
+
+.slide-out {
+  animation: slideOut 0.4s forwards ease-in;
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+}
+
+/* =====================
+   FORMULARIO Y ENTRADAS
+===================== */
+.pregunta-box {
+  text-align: left;
+}
+
+.enunciado {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #dfdfe5;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.4);
+  color: white;
+  font-family: 'Georgia', serif;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #fbc531;
+  box-shadow: 0 0 15px rgba(251, 197, 49, 0.4);
+  background: rgba(20, 20, 20, 0.6);
+}
+
+.opciones-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.opcion-radio {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  cursor: pointer;
+  color: #c9c9d4;
+  font-size: 16px;
+  transition: color 0.3s, transform 0.2s;
+  padding: 10px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.opcion-radio:hover {
+  color: #fbc531;
+  background: rgba(251, 197, 49, 0.05);
+  border-color: rgba(251, 197, 49, 0.3);
+  transform: translateX(5px);
+}
+
+.opcion-radio input[type="radio"] {
+  display: none;
+}
+
+.custom-radio {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #888;
+  border-radius: 50%;
+  margin-right: 12px;
+  display: inline-block;
+  position: relative;
+  transition: all 0.3s;
+}
+
+.opcion-radio input[type="radio"]:checked+.custom-radio {
+  border-color: #fbc531;
+  box-shadow: 0 0 8px rgba(251, 197, 49, 0.6);
+}
+
+.opcion-radio input[type="radio"]:checked+.custom-radio::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: #fbc531;
+  border-radius: 50%;
+}
+
+.opcion-radio:active {
+  transform: scale(0.98);
+}
+
+/* =====================
+   BOTÓN MÁGICO Y CONSECUENCIAS
+===================== */
+button {
+  margin-top: 25px;
+  padding: 12px 35px;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #fbc531, #e1b12c);
+  color: #1a1025;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(251, 197, 49, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 15px 35px rgba(251, 197, 49, 0.7), 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+#mensaje {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+#mensaje h2 {
+  color: #fbc531;
+  font-style: italic;
+  font-size: 22px;
+  line-height: 1.4;
+  text-shadow: 0 0 15px rgba(251, 197, 49, 0.6);
+  margin-bottom: 5px;
+}
+
+#mensaje .sub-msj {
+  color: #aaa;
+  font-size: 14px;
+}
+
+.fade-in-msg {
+  animation: fadeIn 2s forwards ease;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.fade-out-portal {
+  animation: portalFadeOut 3s forwards ease;
+}
+
+@keyframes portalFadeOut {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(1.1);
+  }
+}
+
+.fade-in {
+  animation: aparecer 1.5s ease;
+}
+
+.fade-out {
+  animation: desaparecer 2s ease forwards;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes desaparecer {
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+/* =====================
+   PERFIL DE USUARIO
+===================== */
+.perfil-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.perfil-container:hover {
+  transform: scale(1.1);
+}
+
+.user-photo {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  object-fit: cover;
+}
+
+/* =====================
+   MENÚ DESPLEGABLE (MINIMALISTA)
+===================== */
+.perfil-menu {
+  position: absolute;
+  top: 65px;
+  right: 0;
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  width: 190px;
+  padding: 8px 0;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  animation: pureFadeIn 0.2s ease-out;
+  text-align: left;
+}
+
+@keyframes pureFadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.user-email-text {
+  padding: 6px 16px;
+  color: #777;
+  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.02em;
+  word-break: break-all;
+}
+
+.menu-divider {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin: 6px 0;
+}
+
+.btn-menu {
+  width: 100%;
+  background: transparent;
+  color: #bbb;
+  border: none;
+  padding: 10px 16px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.2s, color 0.2s;
+  display: block;
+}
+
+.btn-menu:hover {
+  background: rgba(255, 255, 255, 0.03);
+  color: #eee;
+}
+
+.btn-logout-compact {
+  color: #a44;
+}
+
+.btn-logout-compact:hover {
+  background: rgba(164, 68, 68, 0.05);
+  color: #f66;
+}

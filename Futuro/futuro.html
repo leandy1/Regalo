@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuro — Lo Que Queremos Vivir 🕊️</title>
+    <link rel="stylesheet" href="futuro.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Botón Volver -->
+    <a href="../Menu/menu.html" class="btn-volver">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor" d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" />
+        </svg>
+        <span>Menú</span>
+    </a>
+
+    <!-- Controles Flotantes -->
+    <div class="controles-flotantes">
+        <button id="btnAddDeseo" class="btn-float add" title="Añadir promesa">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+                <path fill="currentColor" d="M19,13h-6v6h-2v-6H5v-2h6V5h2v6h6V13z" />
+            </svg>
+        </button>
+        <button id="btnBloqueo" class="btn-float lock" title="Bloquear edición">
+            <svg class="lock-icon" viewBox="0 0 24 24" width="24" height="24">
+                <path fill="currentColor"
+                    d="M12,17c1.1,0,2-0.9,2-2s-0.9-2-2-2s-2,0.9-2,2S10.9,17,12,17z M18,8h-1V6c0-2.76-2.24-5-5-5S7,3.24,7,6v2H6c-1.1,0-2,0.9-2,2v10c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V10C20,8.9,19.1,8,18,8z M8.9,8c0-1.71,1.39-3.1,3.1-3.1s3.1,1.39,3.1,3.1v2H8.9V8z" />
+            </svg>
+        </button>
+    </div>
+
+    <div class="container-futuro" id="futuroContainer">
+        <header class="futuro-header">
+            <div class="ornamento-superior">
+                <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                    <path d="M0,10 Q25,0 50,10 Q75,20 100,10" fill="none" stroke="currentColor" stroke-width="0.5"
+                        opacity="0.4" />
+                </svg>
+                <div class="heart-dot">❤</div>
+            </div>
+            <h1 id="tituloFuturo" class="titulo" contenteditable="true">Lo Que Queremos Vivir</h1>
+            <p class="subtitulo">Promesas escritas con el corazón</p>
+
+            <div class="counters-bar">
+                <div class="counter-item">
+                    <span class="count-label">Cumplidos</span>
+                    <span id="countDone" class="count-num">0</span>
+                </div>
+                <div class="counter-sep"></div>
+                <div class="counter-item">
+                    <span class="count-label">Por vivir</span>
+                    <span id="countPending" class="count-num">0</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="lista-deseos" id="listaDeseos">
+            <!-- Los deseos se generarán dinámicamente -->
+        </main>
+
+        <footer class="footer-futuro">
+            <p class="frase-final" id="fraseCierre">Y apenas estamos empezando.</p>
+        </footer>
+    </div>
+
+    <script src="futuro.js"></script>
+</body>
+
+</html>

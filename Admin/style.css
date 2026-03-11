@@ -1,0 +1,377 @@
+/* =====================
+   ADMIN STYLES (MINIMALIST)
+===================== */
+body {
+  margin: 0;
+  padding: 0;
+  background: #050308;
+  font-family: 'Inter', sans-serif;
+  color: #fff8f0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding-top: 50px;
+  overflow-x: hidden;
+}
+
+/* Reutilizando fondo del portal */
+.cielo-profundo {
+  position: fixed;
+  inset: -10%;
+  background: radial-gradient(circle at 50% 100%, #1a1025 0%, transparent 60%);
+  z-index: -1;
+}
+
+.capa-estrellas {
+  position: fixed;
+  inset: -50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 1px, transparent 1px);
+  background-size: 80px 80px;
+  opacity: 0.2;
+  z-index: -1;
+}
+
+.admin-container {
+  width: 95%;
+  max-width: 1000px;
+  background: rgba(20, 15, 30, 0.6);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+  animation: fadeIn 1s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding-bottom: 20px;
+}
+
+.header-left {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.btn-logout-header {
+  background: rgba(255, 94, 120, 0.1);
+  border: 1px solid rgba(255, 94, 120, 0.3);
+  color: #ff5e78;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-logout-header:hover {
+  background: rgba(255, 94, 120, 0.2);
+  border-color: #ff5e78;
+  transform: translateY(-2px);
+}
+
+.admin-main {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 30px;
+  min-height: 500px;
+}
+
+.admin-title {
+  font-size: 24px;
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  color: #fbc531;
+}
+
+.btn-back {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #999;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-back:hover {
+  border-color: #fbc531;
+  color: #fbc531;
+}
+
+/* Gmail Section */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.search-input {
+  flex-grow: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 15px;
+  color: #fff;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #fbc531;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 15px rgba(251, 197, 49, 0.1);
+}
+
+.section-title {
+  font-size: 16px;
+  color: #777;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.btn-sync {
+  background: #fbc531;
+  color: #1a1025;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(251, 197, 49, 0.3);
+  transition: transform 0.2s;
+}
+
+.btn-sync:hover {
+  transform: scale(1.05);
+}
+
+.gmail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.email-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 20px;
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+
+.email-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(251, 197, 49, 0.3);
+}
+
+.email-subject {
+  color: #fbc531;
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.email-snippet {
+  color: #bbb;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.status-text {
+  text-align: center;
+  color: #555;
+  font-style: italic;
+  padding: 40px;
+  font-size: 14px;
+}
+
+/* Sidebar & User List */
+.user-sidebar {
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+  padding-right: 20px;
+}
+
+.user-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.sidebar-title {
+  font-size: 13px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin: 0;
+}
+
+.btn-sync-small {
+  background: rgba(251, 197, 49, 0.1);
+  border: 1px solid rgba(251, 197, 49, 0.2);
+  color: #fbc531;
+  font-size: 10px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-sync-small:hover {
+  background: rgba(251, 197, 49, 0.2);
+  border-color: #fbc531;
+}
+
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.user-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.user-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(251, 197, 49, 0.2);
+  transform: translateX(5px);
+}
+
+.user-item.active {
+  background: rgba(251, 197, 49, 0.1);
+  border-color: rgba(251, 197, 49, 0.4);
+  box-shadow: 0 0 15px rgba(251, 197, 49, 0.1);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  object-fit: cover;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+.btn-delete-email {
+  background: transparent;
+  border: 1px solid rgba(255, 94, 120, 0.2);
+  color: #ff5e78;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-delete-email:hover {
+  background: rgba(255, 94, 120, 0.1);
+  border-color: #ff5e78;
+  transform: translateY(-2px);
+}
+
+.btn-delete-user {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 94, 120, 0.1);
+  border: 1px solid rgba(255, 94, 120, 0.3);
+  color: #ff5e78;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s;
+  z-index: 5;
+}
+
+.user-item:hover .btn-delete-user {
+  opacity: 1;
+}
+
+.btn-delete-user:hover {
+  background: #ff5e78;
+  color: #fff;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.user-name {
+  font-size: 14px;
+  color: #eee;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-email-small {
+  font-size: 11px;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.status-inner {
+  font-size: 12px;
+  color: #444;
+  font-style: italic;
+  text-align: center;
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .admin-main {
+    grid-template-columns: 1fr;
+  }
+  .user-sidebar {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-right: 0;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+  }
+}

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lo Que Nunca Te He Dicho 💌</title>
+    <link rel="stylesheet" href="cartas.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Botón Volver -->
+    <a href="../Menu/menu.html" class="btn-volver">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+            <path fill="currentColor" d="M20,11H7.83l5.59-5.59L12,4l-8,8l8,8l1.41-1.41L7.83,13H20V11z" />
+        </svg>
+        <span>Menú</span>
+    </a>
+
+    <div class="cielo-profundo"></div>
+
+    <div class="container-cartas" id="cartasContainer">
+        <header class="header-intro">
+            <h1 class="titulo-principal">Palabras que guardé para ti</h1>
+            <p class="instruccion">Elige una carta para empezar a leer...</p>
+        </header>
+
+        <main class="grid-sobres">
+            <!-- SOBRE 1 -->
+            <div class="sobre-item" data-carta="1">
+                <div class="sobre-visual">
+                    <div class="sobre-tapa"></div>
+                    <div class="sobre-cuerpo">
+                        <span class="sobre-numero">I</span>
+                    </div>
+                </div>
+                <h3 class="sobre-label">Cuando todo empezó</h3>
+            </div>
+
+            <!-- SOBRE 2 -->
+            <div class="sobre-item" data-carta="2">
+                <div class="sobre-visual">
+                    <div class="sobre-tapa"></div>
+                    <div class="sobre-cuerpo">
+                        <span class="sobre-numero">II</span>
+                    </div>
+                </div>
+                <h3 class="sobre-label">Lo que admiro de ti</h3>
+            </div>
+
+            <!-- SOBRE 3 -->
+            <div class="sobre-item" data-carta="3">
+                <div class="sobre-visual">
+                    <div class="sobre-tapa"></div>
+                    <div class="sobre-cuerpo">
+                        <span class="sobre-numero">III</span>
+                    </div>
+                </div>
+                <h3 class="sobre-label">Lo que quiero contigo</h3>
+            </div>
+        </main>
+
+        <!-- OVERLAY DE LECTURA (MODAL ÍNTIMO) -->
+        <div id="lecturaOverlay" class="lectura-overlay">
+            <button class="btn-cerrar-lectura">&times;</button>
+            <div class="lectura-scroll">
+                <div id="contenidoCarta" class="contenido-carta">
+                    <!-- El contenido se inyecta por JS -->
+                </div>
+
+                <footer class="footer-lectura">
+                    <p class="frase-cierre-interna">Gracias por ser parte de mi historia.</p>
+                </footer>
+            </div>
+        </div>
+
+        <footer class="final-container">
+            <p class="firma">Para que sepas lo mucho que te quiero.</p>
+            <a href="../Menu/menu.html" class="btn-regresar">Volver al menú</a>
+        </footer>
+    </div>
+
+    <!-- TEMPLATES DE CONTENIDO (Ocultos) -->
+    <template id="template-carta-1">
+        <h2 class="carta-titulo-display">Cuando todo empezó</h2>
+        <div class="carta-texto-flow">
+            <p class="fade-line">Me acuerdo exactamente en qué momento empezó todo.</p>
+            <p class="fade-line">Solo sé que un día hablábamos normal… y al siguiente, ya no era tan normal.</p>
+            <br>
+            <p class="fade-line">Me acuerdo de las primeras conversaciones, de cómo esperaba tus mensajes aunque
+                fingiera que no.</p>
+            <p class="fade-line">De cómo empezaste a ocupar espacio en mi cabeza sin pedir permiso.</p>
+            <br>
+            <p class="fade-line">Y lo más extraño es que no me asustó.</p>
+            <p class="fade-line">Me gustó.</p>
+            <br>
+            <p class="fade-line">Me gustó sentir que alguien podía cambiar mi día solo con un mensaje.</p>
+            <p class="fade-line">Y ahí entendí que algo diferente estaba empezando.</p>
+        </div>
+    </template>
+
+    <template id="template-carta-2">
+        <h2 class="carta-titulo-display">Lo que admiro de ti</h2>
+        <div class="carta-texto-flow">
+            <p class="fade-line">Hay cosas tuyas que no sé si sabes que haces.</p>
+            <br>
+            <p class="fade-line">Tu forma de hablar cuando algo te emociona.</p>
+            <p class="fade-line">Cómo te ríes sin intentar verte perfecta.</p>
+            <p class="fade-line">Cómo puedes ser fuerte y dulce al mismo tiempo.</p>
+            <br>
+            <p class="fade-line">Me gusta cómo ves el mundo.</p>
+            <p class="fade-line">Me gusta cómo me haces querer ser mejor sin exigirme nada.</p>
+            <br>
+            <p class="fade-line">Y sobre todo…</p>
+            <p class="fade-line">Me gusta cómo me siento cuando estoy contigo.</p>
+
+            <p class="fade-line">Más tranquilo.</p>
+            <p class="fade-line">Más yo.</p>
+            <br>
+            <p class="fade-line">Contigo puedo ser quien soy en realidad si tener que esconderme.</p>
+            <p class="fade-line">Ser gracioso, ser cariñoso, ser molesto hasta incluso ser timido.</p>
+            <p class="fade-line">Y sabes que es lo que mas me gusta que aun asi no me juzgas.</p>
+            <br>
+            <p class="fade-line">Y te abres conmigo como si no hubiera nadie más en el mundo.</p>
+            <p class="fade-line">Esa sinceridad, esa confianza, esa personalidad que tienes, eso..</p>
+            <p class="fade-line">Es la razon por la cual me gustas.</p>
+        </div>
+    </template>
+
+    <template id="template-carta-3">
+        <h2 class="carta-titulo-display">Lo que quiero contigo</h2>
+        <div class="carta-texto-flow">
+            <p class="fade-line">No quiero promesas enormes ni frases vacías.</p>
+            <p class="fade-line">Quiero cosas simples.</p>
+            <br>
+            <p class="fade-line">Quiero seguir riéndome contigo.</p>
+            <p class="fade-line">Quiero que discutamos y aprendamos.</p>
+            <p class="fade-line">Quiero planes improvisados y recuerdos que todavía no existen.</p>
+            <br>
+            <p class="fade-line">Me da un poco de miedo lo mucho que me importas.</p>
+            <p class="fade-line">Pero es un miedo bonito.</p>
+            <br>
+            <p class="fade-line">Porque si algo tengo claro…</p>
+            <p class="fade-line">es que quiero intentarlo contigo.</p>
+            <br>
+            <p class="fade-line">No perfecto.</p>
+            <p class="fade-line">No ideal.</p>
+            <p class="fade-line">Real.</p>
+            <br>
+            <p class="fade-line">Y seguir eligiéndote, incluso cuando no sea fácil.</p>
+        </div>
+    </template>
+
+    <script src="cartas.js"></script>
+</body>
+
+</html>

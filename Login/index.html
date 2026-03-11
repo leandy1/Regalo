@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acceso al Portal ❤️</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Identity Services Library -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../client-supabase.js"></script>
+</head>
+
+<body>
+    <!-- Fondo Animado (Mismo que index.html) -->
+    <div class="cielo-profundo"></div>
+    <div class="capa-estrellas"></div>
+
+    <div class="contenedor fade-in">
+        <h1 class="titulo-narrativo">Bienvenida/o</h1>
+
+        <div class="login-box">
+            <div class="auth-buttons">
+                <button id="btn-login-unified" class="btn-gmail-auth">
+                    Iniciar Sesión con Google
+                </button>
+            </div>
+        </div>
+
+        <div id="status-msg" class="sub-msj" style="margin-top: 20px;"></div>
+    </div>
+
+    <script src="login.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../client-supabase.js"></script>
+</head>
+
+<body>
+    <!-- Fondo Animado -->
+    <div class="cielo-profundo"></div>
+    <div class="capa-estrellas"></div>
+
+    <div class="admin-container fade-in">
+        <header class="admin-header">
+            <div class="header-left">
+                <button onclick="window.location.href='../index.html'" class="btn-back">← Volver al Portal</button>
+                <button id="btn-logout" class="btn-logout-header">Cerrar Sesión</button>
+            </div>
+            <h1 class="admin-title">Panel Estelar</h1>
+        </header>
+
+        <main class="admin-main">
+            <!-- Barra Lateral de Usuarios -->
+            <aside class="admin-sidebar">
+                <div class="user-list-header">
+                    <h2 class="sidebar-title">Guardianes (Usuarios)</h2>
+                    <button id="btn-sync-all" class="btn-sync-small"
+                        title="Sincronizar todos los usuarios en segundo plano">Sincronizar Todo</button>
+                </div>
+                <div id="user-list" class="user-list">
+                    <p class="status-inner">Buscando usuarios...</p>
+                </div>
+            </aside>
+
+            <!-- Área de Mensajes -->
+            <section class="gmail-section">
+                <div class="section-header">
+                    <input type="text" id="search-emails" class="search-input" placeholder="Buscar mensajes...">
+                    <button id="btn-sync-all-gmail" class="btn-primary">Sincronizar Mails</button>
+                </div>
+
+                <div id="gmail-list" class="gmail-list">
+                    <p class="status-text">Los mensajes aparecerán aquí después de seleccionar a alguien.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+
+</html>
