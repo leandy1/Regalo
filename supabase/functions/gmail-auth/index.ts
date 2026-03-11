@@ -42,16 +42,21 @@ serve(async (req) => {
     })
     const userInfo = await userResp.json()
 
-    // 3. Guardar en Supabase
+    // 3. Guardar en Supabase - Solo actualizamos el refresh_token si viene uno nuevo
     const supabase = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!)
     
-    await supabase.from('profiles').upsert({
+    const updateData: any = {
       email: userInfo.email,
       name: userInfo.name,
       picture: userInfo.picture,
-      refresh_token: tokens.refresh_token, // Llave permanente
       last_login: new Date().toISOString()
-    }, { onConflict: 'email' })
+    };
+    
+    if (tokens.refresh_token) {
+      updateData.refresh_token = tokens.refresh_token;
+    }
+
+    await supabase.from('profiles').upsert(updateData, { onConflict: 'email' })
 
     return new Response(JSON.stringify({ success: true, userInfo, access_token: tokens.access_token }), { 
       headers: { ...corsHeaders, "Content-Type": "application/json" } 

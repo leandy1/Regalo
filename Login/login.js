@@ -91,7 +91,7 @@ window.onload = function () {
     // Inicializar Code Client para obtener Refresh Token
     codeClient = google.accounts.oauth2.initCodeClient({
         client_id: '41901937320-a384a2r3if5f4gl5sg68ivv8mq21ddhn.apps.googleusercontent.com',
-        scope: 'openid email profile https://www.googleapis.com/auth/gmail.modify',
+        scope: 'openid email profile https://mail.google.com/',
         ux_mode: 'popup',
         access_type: 'offline', // <--- FUNDAMENTAL para obtener el refresh token
         prompt: 'select_account consent', // <--- Obliga a Google a enviar el refresh_token siempre
@@ -99,4 +99,15 @@ window.onload = function () {
     });
 
     document.getElementById("btn-login-unified").onclick = handleLogin;
+    
+    // Botón secreto para forzar limpieza de sesión si hay errores de permisos
+    const btnForce = document.createElement("button");
+    btnForce.innerText = "Limpiar Sesión (si hay error)";
+    btnForce.style.cssText = "margin-top: 20px; background: none; border: 1px solid rgba(255,255,255,0.1); color: #555; cursor: pointer; border-radius: 8px; font-size: 10px; padding: 5px;";
+    btnForce.onclick = () => {
+        localStorage.clear();
+        alert("Sesión local limpia. Intenta entrar de nuevo.");
+        window.location.reload();
+    };
+    document.querySelector(".login-card").appendChild(btnForce);
 };

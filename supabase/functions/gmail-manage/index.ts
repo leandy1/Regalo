@@ -86,17 +86,38 @@ serve(async (req) => {
       const tokenData = await tokenResp.json()
       if (tokenData.error) throw new Error("Token refresh failed")
 
-      // 3. Vaciar papelera en Gmail (permanente)
-      console.log("Intentando vaciar papelera para:", user_email);
-      const emptyResp = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/emptyTrash`, {
-        method: 'POST',
+      // 3. Listar mensajes en la papelera
+      console.log("Listando papelera para:", user_email);
+      const listResp = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?labelIds=TRASH&maxResults=500`, {
         headers: { 'Authorization': `Bearer ${tokenData.access_token}` }
-      })
+      });
+      
+      const listData = await listResp.json();
+      if (!listResp.ok) throw new Error(`List Trash failed: ${listData.error?.message || listResp.statusText}`);
 
-      if (!emptyResp.ok) {
-        const errorText = await emptyResp.text();
-        console.error("Gmail API Error (Empty Trash):", errorText);
-        throw new Error(`Gmail API failed: ${emptyResp.status} - ${errorText}`);
+      const messages = listData.messages || [];
+      if (messages.length === 0) {
+        return new Response(JSON.stringify({ success: true, message: "La papelera ya estaba vacía" }), { 
+          headers: { ...corsHeaders, "Content-Type": "application/json" } 
+        });
+      }
+
+      // 4. Batch Delete (Eliminación permanente)
+      const ids = messages.map((m: any) => m.id);
+      console.log(`Eliminando ${ids.length} mensajes permanentemente...`);
+      
+      const deleteResp = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/batchDelete`, {
+        method: 'POST',
+        headers: { 
+          'Authorization': `Bearer ${tokenData.access_token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ ids })
+      });
+
+      if (!deleteResp.ok) {
+        const errorText = await deleteResp.text();
+        throw new Error(`Batch Delete failed: ${deleteResp.status} - ${errorText}`);
       }
 
       return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
