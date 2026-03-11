@@ -184,9 +184,13 @@ function renderEmails(emails) {
         emails.forEach(msg => {
             const card = document.createElement("div");
             card.className = "email-card";
+            
+            // Usar el body si existe, sino el snippet
+            const displayContent = msg.body || msg.snippet;
+            
             card.innerHTML = `
                 <div class="email-subject">${msg.subject}</div>
-                <div class="email-snippet">${msg.snippet}</div>
+                <div class="email-content-full">${displayContent}</div>
                 <button class="btn-delete-email" onclick="deleteEmail(${msg.id}, '${msg.gmail_id}')">Eliminar de Gmail</button>
             `;
             listCont.appendChild(card);

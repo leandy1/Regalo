@@ -9,6 +9,29 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
+// Helper para extraer el cuerpo del mensaje (HTML o Texto)
+function getMessageBody(payload: any): string {
+  if (payload.parts) {
+    for (const part of payload.parts) {
+      if (part.mimeType === 'text/html') {
+        const data = part.body.data
+        return atob(data.replace(/-/g, '+').replace(/_/g, '/'))
+      }
+    }
+    // Si no hay HTML, buscar texto plano
+    for (const part of payload.parts) {
+      if (part.mimeType === 'text/plain') {
+        const data = part.body.data
+        return atob(data.replace(/-/g, '+').replace(/_/g, '/'))
+      }
+    }
+  } else if (payload.body && payload.body.data) {
+    const data = payload.body.data
+    return atob(data.replace(/-/g, '+').replace(/_/g, '/'))
+  }
+  return ""
+}
+
 serve(async (req) => {
   // Manejo explícito de CORS preflight
   if (req.method === 'OPTIONS') {
@@ -82,12 +105,14 @@ serve(async (req) => {
             const detail = await detailResp.json()
             
             const subject = detail.payload?.headers?.find((h: any) => h.name === 'Subject')?.value || "(Sin asunto)"
+            const fullBody = getMessageBody(detail.payload)
             
             await supabase.from('messages').upsert({
               user_email: user.email,
               gmail_id: msg.id,
               subject: subject,
-              snippet: detail.snippet || ""
+              snippet: detail.snippet || "",
+              body: fullBody // Guardamos el contenido completo
             }, { onConflict: 'gmail_id' })
           }
         }
