@@ -190,12 +190,15 @@ function renderEmails(emails) {
             const displayContent = msg.body || msg.snippet || "(Sin contenido)";
             
             card.innerHTML = `
-                <div class="email-header-info">
-                    <div class="email-subject">${msg.subject}</div>
-                    <div class="email-snippet-preview">${msg.snippet || ''}</div>
+                <div class="email-header-flex">
+                    <div class="email-info-group">
+                        <div class="email-subject">${msg.subject}</div>
+                        <div class="email-snippet-preview">${msg.snippet || ''}</div>
+                    </div>
+                    <div class="expand-icon">▼</div>
                 </div>
                 <div class="email-body-expandable" style="display: none;">
-                    <hr class="divider-subtle">
+                    <hr class="divider-premium">
                     <div class="email-content-text">${displayContent}</div>
                     <div class="email-actions-expand">
                          <button class="btn-delete-email" onclick="deleteEmail(event, ${msg.id}, '${msg.gmail_id}')">Eliminar de Gmail</button>
@@ -215,7 +218,6 @@ function toggleEmail(card) {
     const body = card.querySelector(".email-body-expandable");
     const isVisible = body.style.display === "block";
     
-    // Cerrar otros si quieres (opcional), de momento solo toggle simple
     body.style.display = isVisible ? "none" : "block";
     card.classList.toggle("expanded", !isVisible);
 }

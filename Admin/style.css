@@ -34,7 +34,7 @@ body {
 
 .admin-container {
   width: 95%;
-  max-width: 1000px;
+  max-width: 1100px;
   background: rgba(20, 15, 30, 0.6);
   backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -165,83 +165,108 @@ body {
 .gmail-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 15px;
 }
 
 .email-card {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 15px 20px;
-  border-radius: 12px;
+  padding: 18px 25px;
+  border-radius: 16px;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
+  overflow: hidden;
 }
 
 .email-card:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(251, 197, 49, 0.3);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(251, 197, 49, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
 .email-card.expanded {
-  background: rgba(251, 197, 49, 0.05);
+  background: rgba(20, 15, 30, 0.8);
   border-color: rgba(251, 197, 49, 0.4);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.email-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .email-subject {
   color: #fbc531;
-  font-size: 14px;
-  font-weight: bold;
-  margin-bottom: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
 }
 
 .email-snippet-preview {
-  color: #888;
-  font-size: 12px;
+  color: #aaa;
+  font-size: 13px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 85%;
+}
+
+.expand-icon {
+  color: #555;
+  font-size: 12px;
+  transition: transform 0.3s;
+}
+
+.expanded .expand-icon {
+  transform: rotate(180deg);
+  color: #fbc531;
 }
 
 .email-body-expandable {
-  margin-top: 15px;
-  animation: slideDown 0.3s ease;
+  margin-top: 20px;
+  animation: slideIn 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-15px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.divider-subtle {
+.divider-premium {
   border: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  margin: 15px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 20px 0;
 }
 
 .email-content-text {
-  color: #eee;
-  font-size: 13px;
-  line-height: 1.6;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 15px;
-  border-radius: 8px;
+  color: #ddd;
+  font-size: 14px;
+  line-height: 1.8;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  border-radius: 12px;
   white-space: pre-wrap;
   word-wrap: break-word;
+  font-family: 'Inter', sans-serif;
+  border: 1px solid rgba(255, 255, 255, 0.03);
 }
 
 .email-actions-expand {
   display: flex;
   justify-content: flex-end;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .status-text {
   text-align: center;
-  color: #555;
+  color: #666;
   font-style: italic;
-  padding: 40px;
-  font-size: 14px;
+  padding: 50px;
+  font-size: 15px;
 }
 
 /* Sidebar & User List */
@@ -254,14 +279,14 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .sidebar-title {
-  font-size: 13px;
+  font-size: 12px;
   color: #555;
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.2em;
   margin: 0;
 }
 
@@ -269,9 +294,9 @@ body {
   background: rgba(251, 197, 49, 0.1);
   border: 1px solid rgba(251, 197, 49, 0.2);
   color: #fbc531;
-  font-size: 10px;
-  padding: 4px 8px;
-  border-radius: 4px;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -284,19 +309,19 @@ body {
 .user-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .user-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
+  gap: 14px;
+  padding: 14px;
   background: rgba(255, 255, 255, 0.02);
   border: 1px solid rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
+  border-radius: 14px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.33s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
 }
@@ -304,20 +329,20 @@ body {
 .user-item:hover {
   background: rgba(255, 255, 255, 0.06);
   border-color: rgba(251, 197, 49, 0.2);
-  transform: translateX(5px);
+  transform: translateX(8px);
 }
 
 .user-item.active {
   background: rgba(251, 197, 49, 0.1);
   border-color: rgba(251, 197, 49, 0.4);
-  box-shadow: 0 0 15px rgba(251, 197, 49, 0.1);
+  box-shadow: 0 0 20px rgba(251, 197, 49, 0.1);
 }
 
 .user-avatar {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.05);
   object-fit: cover;
 }
 
@@ -332,14 +357,14 @@ body {
   background: transparent;
   border: 1px solid rgba(255, 94, 120, 0.2);
   color: #ff5e78;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 11px;
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.3s;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
 .btn-delete-email:hover {
@@ -350,19 +375,19 @@ body {
 
 .btn-delete-user {
   position: absolute;
-  right: 12px;
+  right: 14px;
   top: 50%;
   transform: translateY(-50%);
   background: rgba(255, 94, 120, 0.1);
   border: 1px solid rgba(255, 94, 120, 0.3);
   color: #ff5e78;
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   opacity: 0;
   transition: all 0.3s;
@@ -376,11 +401,11 @@ body {
 .btn-delete-user:hover {
   background: #ff5e78;
   color: #fff;
-  transform: translateY(-50%) scale(1.1);
+  transform: translateY(-50%) scale(1.15);
 }
 
 .user-name {
-  font-size: 14px;
+  font-size: 15px;
   color: #eee;
   font-weight: 500;
   white-space: nowrap;
@@ -389,19 +414,19 @@ body {
 }
 
 .user-email-small {
-  font-size: 11px;
-  color: #666;
+  font-size: 12px;
+  color: #777;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .status-inner {
-  font-size: 12px;
+  font-size: 13px;
   color: #444;
   font-style: italic;
   text-align: center;
-  padding: 10px;
+  padding: 15px;
 }
 
 @media (max-width: 768px) {
@@ -412,7 +437,7 @@ body {
     border-right: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding-right: 0;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
   }
 }
