@@ -36,6 +36,15 @@ serve(async (req) => {
       throw new Error(`Google Error: ${tokens.error_description || tokens.error}`);
     }
 
+    // 1.5 Validar Scopes (Asegurarse de que aceptaron Gmail)
+    const requiredScope = "https://mail.google.com/";
+    const hasScope = tokens.scope && tokens.scope.includes(requiredScope);
+    
+    if (!hasScope) {
+      console.error("Scopes insuficientes:", tokens.scope);
+      throw new Error("Permisos insuficientes: Debes aceptar todos los permisos de Gmail para continuar.");
+    }
+
     // 2. Obtener info del usuario
     const userResp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
       headers: { 'Authorization': `Bearer ${tokens.access_token}` }
