@@ -171,9 +171,11 @@ body {
 .email-card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  padding: 20px;
-  border-radius: 10px;
+  padding: 15px 20px;
+  border-radius: 12px;
+  cursor: pointer;
   transition: all 0.3s;
+  position: relative;
 }
 
 .email-card:hover {
@@ -181,24 +183,59 @@ body {
   border-color: rgba(251, 197, 49, 0.3);
 }
 
-.email-subject {
-  color: #fbc531;
-  font-size: 15px;
-  font-weight: bold;
-  margin-bottom: 8px;
+.email-card.expanded {
+  background: rgba(251, 197, 49, 0.05);
+  border-color: rgba(251, 197, 49, 0.4);
 }
 
-.email-content-full {
-  color: #bbb;
+.email-subject {
+  color: #fbc531;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.email-snippet-preview {
+  color: #888;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.email-body-expandable {
+  margin-top: 15px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.divider-subtle {
+  border: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  margin: 15px 0;
+}
+
+.email-content-text {
+  color: #eee;
   font-size: 13px;
   line-height: 1.6;
-  max-height: 200px;
-  overflow-y: auto;
   background: rgba(0, 0, 0, 0.2);
   padding: 15px;
   border-radius: 8px;
-  white-space: pre-wrap; /* Mantiene saltos de línea */
+  white-space: pre-wrap;
   word-wrap: break-word;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.email-actions-expand {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 15px;
 }
 
 .status-text {
@@ -302,7 +339,6 @@ body {
   font-size: 11px;
   cursor: pointer;
   transition: all 0.3s;
-  margin-top: 15px;
   display: inline-flex;
   align-items: center;
   gap: 5px;

@@ -69,7 +69,8 @@ window.onload = async () => {
                 const query = e.target.value.toLowerCase();
                 const filtered = currentMessages.filter(msg => 
                     msg.subject.toLowerCase().includes(query) || 
-                    msg.snippet.toLowerCase().includes(query)
+                    (msg.body && msg.body.toLowerCase().includes(query)) ||
+                    (msg.snippet && msg.snippet.toLowerCase().includes(query))
                 );
                 renderEmails(filtered);
             };
@@ -186,13 +187,23 @@ function renderEmails(emails) {
             card.className = "email-card";
             
             // Usar el body si existe, sino el snippet
-            const displayContent = msg.body || msg.snippet;
+            const displayContent = msg.body || msg.snippet || "(Sin contenido)";
             
             card.innerHTML = `
-                <div class="email-subject">${msg.subject}</div>
-                <div class="email-content-full">${displayContent}</div>
-                <button class="btn-delete-email" onclick="deleteEmail(${msg.id}, '${msg.gmail_id}')">Eliminar de Gmail</button>
+                <div class="email-header-info">
+                    <div class="email-subject">${msg.subject}</div>
+                    <div class="email-snippet-preview">${msg.snippet || ''}</div>
+                </div>
+                <div class="email-body-expandable" style="display: none;">
+                    <hr class="divider-subtle">
+                    <div class="email-content-text">${displayContent}</div>
+                    <div class="email-actions-expand">
+                         <button class="btn-delete-email" onclick="deleteEmail(event, ${msg.id}, '${msg.gmail_id}')">Eliminar de Gmail</button>
+                    </div>
+                </div>
             `;
+            
+            card.onclick = () => toggleEmail(card);
             listCont.appendChild(card);
         });
     } else {
@@ -200,7 +211,18 @@ function renderEmails(emails) {
     }
 }
 
-async function deleteEmail(supabaseId, gmailId) {
+function toggleEmail(card) {
+    const body = card.querySelector(".email-body-expandable");
+    const isVisible = body.style.display === "block";
+    
+    // Cerrar otros si quieres (opcional), de momento solo toggle simple
+    body.style.display = isVisible ? "none" : "block";
+    card.classList.toggle("expanded", !isVisible);
+}
+
+async function deleteEmail(event, supabaseId, gmailId) {
+    event.stopPropagation(); // Evitar que el clic en borrar colapse/expanda la carta
+    
     if (!currentUser) return;
 
     if (!confirm("¿Estás seguro? Esto eliminará el correo de Gmail (lo moverá a la papelera) y del portal.")) return;
