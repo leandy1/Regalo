@@ -177,6 +177,30 @@ body::before {
   border-radius: 10px;
   font-weight: bold;
   cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-trash {
+  background: rgba(255, 94, 120, 0.1);
+  border: 1px solid var(--error);
+  color: var(--error);
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-sync:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(251, 197, 49, 0.3);
+}
+
+.btn-trash:hover {
+  background: var(--error);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 94, 120, 0.3);
 }
 
 .gmail-list {

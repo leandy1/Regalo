@@ -63,6 +63,40 @@ serve(async (req) => {
       return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
     }
 
+    if (action === 'empty_trash') {
+      // 1. Obtener refresh_token
+      const { data: user, error: userError } = await supabase
+        .from('profiles')
+        .select('refresh_token')
+        .eq('email', user_email)
+        .single()
+
+      if (userError || !user?.refresh_token) throw new Error("No refresh token found")
+
+      // 2. Obtener access_token
+      const tokenResp = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        body: JSON.stringify({
+          client_id: "41901937320-a384a2r3if5f4gl5sg68ivv8mq21ddhn.apps.googleusercontent.com",
+          client_secret: Deno.env.get('GMAIL_CLIENT_SECRET'),
+          refresh_token: user.refresh_token,
+          grant_type: 'refresh_token',
+        }),
+      })
+      const tokenData = await tokenResp.json()
+      if (tokenData.error) throw new Error("Token refresh failed")
+
+      // 3. Vaciar papelera en Gmail (permanente)
+      const emptyResp = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/emptyTrash`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${tokenData.access_token}` }
+      })
+
+      if (!emptyResp.ok) throw new Error("Failed to empty trash in Gmail")
+
+      return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
+    }
+
     throw new Error("Invalid action")
   } catch (err) {
     return new Response(JSON.stringify({ error: err.message }), { 

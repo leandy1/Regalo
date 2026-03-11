@@ -50,6 +50,31 @@ window.onload = async () => {
         const btnSync2 = document.getElementById("btn-sync-all-gmail");
         if (btnSync2) btnSync2.onclick = () => runGlobalSync(btnSync2);
 
+        // Vaciar Papelera
+        const btnTrash = document.getElementById("btn-empty-trash");
+        if (btnTrash) {
+            btnTrash.onclick = async () => {
+                if (!currentUser) return alert("Selecciona un guardián primero.");
+                if (confirm(`¿Vaciar DEFINITIVAMENTE la papelera de ${currentUser.email}?`)) {
+                    btnTrash.disabled = true;
+                    btnTrash.innerText = "Vaciando...";
+                    try {
+                        const { data, error } = await supabase.functions.invoke('gmail-manage', {
+                            body: { action: 'empty_trash', user_email: currentUser.email }
+                        });
+                        if (error) throw error;
+                        alert("Papelera vaciada correctamente.");
+                        fetchEmails(currentUser);
+                    } catch (e) {
+                        alert("Error: " + e.message);
+                    } finally {
+                        btnTrash.disabled = false;
+                        btnTrash.innerText = "Vaciar Papelera";
+                    }
+                }
+            };
+        }
+
         // Búsqueda
         const searchInput = document.getElementById("search-emails");
         if (searchInput) {
