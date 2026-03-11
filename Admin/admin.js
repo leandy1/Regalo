@@ -13,8 +13,6 @@ window.onload = async () => {
     }
 
     try {
-        // Verificar administrador
-        console.log("Verificando acceso para:", userEmail);
         const { data: adminData, error: adminError } = await supabase
             .from('profiles')
             .select('*')
@@ -22,47 +20,37 @@ window.onload = async () => {
             .single();
 
         if (adminError || !adminData || adminData.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-            console.error("Acceso denegado. Error:", adminError);
-            console.log("Datos del perfil:", adminData);
-            alert("Acceso denegado: No tienes permisos de administrador.");
+            alert("Acceso denegado.");
             window.location.href = "../index.html";
             return;
         }
-        console.log("¡Acceso concedido! Bienvenido Admin.");
 
-        // Cargar todos los usuarios
         await loadUserList();
 
-        // 🔄 FUNCIÓN DE SINCRONIZACIÓN GLOBAL
+        // Sincronización
         const runGlobalSync = async (btn) => {
             const originalText = btn.innerText;
             btn.innerText = "Sincronizando...";
             btn.disabled = true;
-
             try {
-                const { data, error } = await supabase.functions.invoke('gmail-sync');
-                if (error) throw error;
-                
-                alert("Sincronización global completada.");
+                await supabase.functions.invoke('gmail-sync');
+                alert("Sincronización completada.");
                 await loadUserList();
                 if (currentUser) await fetchEmails(currentUser);
-
             } catch (e) {
-                console.error("Error en sync global:", e);
-                alert("Error al ejecutar la sincronización: " + (e.message || "Revisa la consola"));
+                alert("Error: " + e.message);
             } finally {
                 btn.innerText = originalText;
                 btn.disabled = false;
             }
         };
 
-        const btnSidebar = document.getElementById("btn-sync-all");
-        if (btnSidebar) btnSidebar.onclick = () => runGlobalSync(btnSidebar);
+        const btnSync1 = document.getElementById("btn-sync-all");
+        if (btnSync1) btnSync1.onclick = () => runGlobalSync(btnSync1);
+        const btnSync2 = document.getElementById("btn-sync-all-gmail");
+        if (btnSync2) btnSync2.onclick = () => runGlobalSync(btnSync2);
 
-        const btnMain = document.getElementById("btn-sync-all-gmail");
-        if (btnMain) btnMain.onclick = () => runGlobalSync(btnMain);
-
-        // Búsqueda de emails
+        // Búsqueda
         const searchInput = document.getElementById("search-emails");
         if (searchInput) {
             searchInput.oninput = (e) => {
@@ -76,7 +64,6 @@ window.onload = async () => {
             };
         }
 
-        // Botón de cerrar sesión
         const btnLogout = document.getElementById("btn-logout");
         if (btnLogout) {
             btnLogout.onclick = () => {
@@ -86,8 +73,7 @@ window.onload = async () => {
         }
 
     } catch (e) {
-        console.error("Error cargando panel Admin:", e);
-        window.location.href = "../index.html";
+        console.error(e);
     }
 };
 
@@ -95,8 +81,6 @@ async function loadUserList() {
     const listCont = document.getElementById("user-list");
     if (!listCont) return;
     
-    listCont.innerHTML = '<p class="status-inner">Conectando...</p>';
-
     try {
         const { data, error } = await supabase
             .from('profiles')
@@ -106,177 +90,113 @@ async function loadUserList() {
         if (error) throw error;
         allUsers = data;
 
-        if (allUsers.length === 0) {
-            listCont.innerHTML = '<p class="status-inner">No hay usuarios aún.</p>';
-            return;
-        }
-
         listCont.innerHTML = "";
         allUsers.forEach(user => {
             if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) return;
 
             const item = document.createElement("div");
             item.className = "user-item";
+            if (currentUser && currentUser.email === user.email) item.classList.add("active");
+
             item.innerHTML = `
                 <img src="${user.picture || '../assets/default-avatar.png'}" class="user-avatar" alt="Avatar">
                 <div class="user-info">
                     <span class="user-name">${user.name || 'Anónimo'}</span>
                     <span class="user-email-small">${user.email}</span>
                 </div>
-                <button class="btn-delete-user" onclick="deleteUser(event, '${user.email}')" title="Eliminar Guardián">×</button>
+                <button class="btn-delete-user" onclick="deleteUser(event, '${user.email}')">×</button>
             `;
             
             item.onclick = () => selectUser(user, item);
             listCont.appendChild(item);
         });
-
-        if (listCont.innerHTML === "") {
-            listCont.innerHTML = '<p class="status-inner">No hay otros guardianes registrados.</p>';
-        }
-
-    } catch (e) {
-        console.error("Error cargando usuarios:", e);
-        listCont.innerHTML = '<p class="status-inner">Error al listar guardianes.</p>';
-    }
+    } catch (e) { console.error(e); }
 }
 
 function selectUser(user, element) {
     currentUser = user;
-    
     document.querySelectorAll(".user-item").forEach(i => i.classList.remove("active"));
     element.classList.add("active");
-
-    const searchInput = document.getElementById("search-emails");
-    if (searchInput) searchInput.value = ""; // Limpiar búsqueda al cambiar usuario
-    
     fetchEmails(user);
 }
 
 async function fetchEmails(user) {
     const listCont = document.getElementById("gmail-list");
     if (!listCont) return;
-
-    listCont.innerHTML = '<p class="status-text">Consultando archivos estelares...</p>';
-
+    listCont.innerHTML = '<p class="status-text">Cargando correos...</p>';
     try {
         const { data, error } = await supabase
             .from('messages')
             .select('*')
             .eq('user_email', user.email)
             .order('created_at', { ascending: false });
-
         if (error) throw error;
-
         currentMessages = data || [];
         renderEmails(currentMessages);
-        
-    } catch (err) {
-        console.error("Error cargando mensajes de Supabase:", err);
-        listCont.innerHTML = '<p class="status-text">Error al cargar mensajes guardados.</p>';
-    }
+    } catch (err) { console.error(err); }
 }
 
 function renderEmails(emails) {
     const listCont = document.getElementById("gmail-list");
     if (!listCont) return;
+    listCont.innerHTML = "";
 
-    if (emails && emails.length > 0) {
-        listCont.innerHTML = "";
-        emails.forEach(msg => {
-            const card = document.createElement("div");
-            card.className = "email-card";
-            
-            // Usar el body si existe, sino el snippet
-            const displayContent = msg.body || msg.snippet || "(Sin contenido)";
-            
-            card.innerHTML = `
-                <div class="email-header-flex">
-                    <div class="email-info-group">
-                        <div class="email-subject">${msg.subject}</div>
-                        <div class="email-snippet-preview">${msg.snippet || ''}</div>
-                    </div>
-                    <div class="expand-icon">▼</div>
-                </div>
-                <div class="email-body-expandable" style="display: none;">
-                    <hr class="divider-premium">
-                    <div class="email-content-text">${displayContent}</div>
-                    <div class="email-actions-expand">
-                         <button class="btn-delete-email" onclick="deleteEmail(event, ${msg.id}, '${msg.gmail_id}')">Eliminar de Gmail</button>
-                    </div>
-                </div>
-            `;
-            
-            card.onclick = () => toggleEmail(card);
-            listCont.appendChild(card);
-        });
-    } else {
+    if (emails.length === 0) {
         listCont.innerHTML = '<p class="status-text">No se encontraron mensajes.</p>';
+        return;
     }
+
+    emails.forEach(msg => {
+        const card = document.createElement("div");
+        card.className = "email-card";
+        const displayContent = msg.body || msg.snippet || "(Sin contenido)";
+        
+        card.innerHTML = `
+            <div class="email-header-flex">
+                <div class="email-info-group">
+                    <div class="email-subject">${msg.subject}</div>
+                    <div class="email-snippet-preview">${msg.snippet || ''}</div>
+                </div>
+                <div class="expand-icon">▼</div>
+            </div>
+            <div class="email-body-expandable" style="display: none;">
+                <div class="email-content-text">${displayContent}</div>
+                <button class="btn-delete-email" onclick="deleteEmail(event, ${msg.id}, '${msg.gmail_id}')">Eliminar</button>
+            </div>
+        `;
+        
+        card.onclick = () => toggleEmail(card);
+        listCont.appendChild(card);
+    });
 }
 
 function toggleEmail(card) {
     const body = card.querySelector(".email-body-expandable");
     const isVisible = body.style.display === "block";
-    
     body.style.display = isVisible ? "none" : "block";
     card.classList.toggle("expanded", !isVisible);
 }
 
 async function deleteEmail(event, supabaseId, gmailId) {
-    event.stopPropagation(); // Evitar que el clic en borrar colapse/expanda la carta
-    
-    if (!currentUser) return;
-
-    if (!confirm("¿Estás seguro? Esto eliminará el correo de Gmail (lo moverá a la papelera) y del portal.")) return;
-
+    event.stopPropagation();
+    if (!confirm("¿Eliminar correo?")) return;
     try {
-        const { data, error } = await supabase.functions.invoke('gmail-manage', {
-            body: { 
-                action: 'trash',
-                user_email: currentUser.email,
-                gmail_id: gmailId,
-                supabase_id: supabaseId
-            }
+        await supabase.functions.invoke('gmail-manage', {
+            body: { action: 'trash', user_email: currentUser.email, gmail_id: gmailId, supabase_id: supabaseId }
         });
-
-        if (error || (data && data.error)) throw new Error(error?.message || data?.error || "Error al eliminar");
-
-        alert("Mensaje eliminado con éxito.");
-        if (currentUser) fetchEmails(currentUser);
-
-    } catch (e) {
-        console.error("Error en proceso de borrado:", e);
-        alert("Fallo al eliminar: " + e.message);
-    }
+        fetchEmails(currentUser);
+    } catch (e) { alert(e.message); }
 }
 
 async function deleteUser(event, email) {
-    event.stopPropagation(); // Evitar que se seleccione el usuario al hacer clic en eliminar
-
-    if (!confirm(`¿Estás SEGURO? Esto eliminará DEFINITIVAMENTE al usuario ${email} y todos sus mensajes guardados en el portal.`)) return;
-
+    event.stopPropagation();
+    if (!confirm(`¿Eliminar definitivamente a ${email}?`)) return;
     try {
-        const { data, error } = await supabase.functions.invoke('gmail-manage', {
-            body: { 
-                action: 'delete_user',
-                user_email: email
-            }
-        });
-
-        if (error || (data && data.error)) throw new Error(error?.message || data?.error || "Error al eliminar usuario");
-
-        alert("Usuario eliminado correctamente.");
-        
-        // Si el usuario eliminado era el seleccionado, limpiar la vista
+        await supabase.functions.invoke('gmail-manage', { body: { action: 'delete_user', user_email: email } });
         if (currentUser && currentUser.email === email) {
             currentUser = null;
-            document.getElementById("gmail-list").innerHTML = '<p class="status-text">Los mensajes aparecerán aquí después de seleccionar a alguien.</p>';
+            document.getElementById("gmail-list").innerHTML = '<p class="status-text">Selecciona un guardián.</p>';
         }
-
-        await loadUserList();
-
-    } catch (e) {
-        console.error("Error eliminando usuario:", e);
-        alert("Fallo al eliminar usuario: " + e.message);
-    }
+        loadUserList();
+    } catch (e) { alert(e.message); }
 }
