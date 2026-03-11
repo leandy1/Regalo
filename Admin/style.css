@@ -228,8 +228,6 @@ body {
   border-radius: 8px;
   white-space: pre-wrap;
   word-wrap: break-word;
-  max-height: 400px;
-  overflow-y: auto;
 }
 
 .email-actions-expand {

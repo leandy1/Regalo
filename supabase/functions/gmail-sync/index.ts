@@ -9,27 +9,52 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 }
 
-// Helper para extraer el cuerpo del mensaje (HTML o Texto)
-function getMessageBody(payload: any): string {
-  if (payload.parts) {
-    for (const part of payload.parts) {
-      if (part.mimeType === 'text/html') {
-        const data = part.body.data
-        return atob(data.replace(/-/g, '+').replace(/_/g, '/'))
-      }
+// Helper para decodificar Base64URL con soporte UTF-8
+function decodeBase64(data: string): string {
+  try {
+    const binaryString = atob(data.replace(/-/g, '+').replace(/_/g, '/'));
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
     }
-    // Si no hay HTML, buscar texto plano
-    for (const part of payload.parts) {
-      if (part.mimeType === 'text/plain') {
-        const data = part.body.data
-        return atob(data.replace(/-/g, '+').replace(/_/g, '/'))
-      }
-    }
-  } else if (payload.body && payload.body.data) {
-    const data = payload.body.data
-    return atob(data.replace(/-/g, '+').replace(/_/g, '/'))
+    return new TextDecoder().decode(bytes);
+  } catch (e) {
+    console.error("Error decodificando base64:", e);
+    return "";
   }
-  return ""
+}
+
+// Helper para extraer el cuerpo del mensaje (HTML o Texto) de forma recursiva
+function getMessageBody(payload: any): string {
+  if (!payload) return "";
+
+  // 1. Si es una parte con data directa
+  if (payload.body && payload.body.data && (payload.mimeType === 'text/html' || payload.mimeType === 'text/plain')) {
+    return decodeBase64(payload.body.data);
+  }
+
+  // 2. Si tiene partes (multipart), buscar recursivamente con prioridad
+  if (payload.parts) {
+    // Primero buscar HTML en este nivel
+    for (const part of payload.parts) {
+      if (part.mimeType === 'text/html' && part.body?.data) {
+        return decodeBase64(part.body.data);
+      }
+    }
+    // Luego buscar texto plano en este nivel
+    for (const part of payload.parts) {
+      if (part.mimeType === 'text/plain' && part.body?.data) {
+        return decodeBase64(part.body.data);
+      }
+    }
+    // Si no, buscar en profundidad en cada parte
+    for (const part of payload.parts) {
+      const body = getMessageBody(part);
+      if (body) return body;
+    }
+  }
+
+  return "";
 }
 
 serve(async (req) => {
