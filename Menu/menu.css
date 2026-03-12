@@ -282,6 +282,11 @@ body {
     opacity: 0;
 }
 
+/* Estado para regalos que ya estaban abiertos al cargar: sin animación */
+.tarjeta-regalo.ya-abierto .envoltura {
+    display: none !important;
+}
+
 /* =====================
    ICONOS Y DECORACIÓN
    ===================== */
@@ -327,3 +332,93 @@ body {
     border-color: rgba(255, 175, 189, 0.1);
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
 }
+
+/* =====================
+   PERFIL DE USUARIO
+===================== */
+.perfil-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 100;
+    cursor: pointer;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  
+  .perfil-container:hover {
+    transform: scale(1.1);
+  }
+  
+  .user-photo {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 175, 189, 0.3);
+    object-fit: cover;
+  }
+  
+  .perfil-menu {
+    position: absolute;
+    top: 65px;
+    right: 0;
+    background: #1a0a0a;
+    border: 1px solid rgba(255, 175, 189, 0.1);
+    border-radius: 12px;
+    width: 190px;
+    padding: 8px 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    animation: pureFadeIn 0.2s ease-out;
+    text-align: left;
+  }
+  
+  @keyframes pureFadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .user-email-text {
+    padding: 6px 16px;
+    color: var(--text-dim);
+    font-size: 11px;
+    font-family: 'Inter', sans-serif;
+    letter-spacing: 0.02em;
+    word-break: break-all;
+    margin: 0;
+  }
+  
+  .menu-divider {
+    border: 0;
+    border-top: 1px solid rgba(255, 175, 189, 0.1);
+    margin: 6px 0;
+  }
+  
+  .btn-menu {
+    width: 100%;
+    background: transparent;
+    color: var(--text-main);
+    border: none;
+    padding: 10px 16px;
+    text-align: left;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'Inter', sans-serif;
+    transition: background 0.2s, color 0.2s;
+    display: block;
+    margin-top: 0 !important;
+    box-shadow: none !important;
+  }
+  
+  .btn-menu:hover {
+    background: rgba(255, 175, 189, 0.05);
+    color: var(--accent);
+  }
+  
+  .btn-logout-compact {
+    color: #ff5e78;
+  }
+  
+  .btn-logout-compact:hover {
+    background: rgba(255, 94, 120, 0.05);
+    color: #ff3b30;
+  }

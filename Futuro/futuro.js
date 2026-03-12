@@ -1,31 +1,15 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const listaDeseos = document.getElementById('listaDeseos');
     const tituloFuturo = document.getElementById('tituloFuturo');
     const btnAddDeseo = document.getElementById('btnAddDeseo');
     const btnBloqueo = document.getElementById('btnBloqueo');
     const body = document.body;
     const fraseCierre = document.getElementById('fraseCierre');
-
-    // 1. CARGA Y PERSISTENCIA INITIAL
-    const isLocked = localStorage.getItem('futuro_locked') === 'true';
-    if (isLocked) {
-        body.classList.add('locked');
-        btnBloqueo.classList.add('locked');
-        btnBloqueo.innerHTML = '<svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M18,8h-1V6c0-2.76-2.24-5-5-5S7,3.24,7,6v2H6c-1.1,0-2,0.9-2,2v10c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V10C20,8.9,19.1,8,18,8z M9,6c0-1.66,1.34-3,3-3s3,1.34,3,3v2H9V6z"/></svg>';
-    }
-
-    const savedTitle = localStorage.getItem('futuro_titulo');
-    if (savedTitle) tituloFuturo.textContent = savedTitle;
-
-    tituloFuturo.addEventListener('input', () => {
-        localStorage.setItem('futuro_titulo', tituloFuturo.textContent);
-    });
-
     const countDoneEl = document.getElementById('countDone');
     const countPendingEl = document.getElementById('countPending');
 
-    // Fuente de verdad compartida con Recuerdos
-    let deseosCount = parseInt(localStorage.getItem('futuro_count'));
+    // Email compartido para la base de datos
+    const SHARED_EMAIL = 'leandygabin9@gmail.com';
 
     const initialDeseos = [
         { p: "1. Ir a la playa al atardecer", s: "Un cielo de colores frente al mar." },
@@ -52,175 +36,164 @@ document.addEventListener('DOMContentLoaded', () => {
         { p: "22. Celebrar un aniversario", s: "Brindando por cada momento vivido." }
     ];
 
-    // Lógica para migrar/añadir los nuevos deseos si el usuario tiene la versión vieja o está vacío
-    const versionActual = "2.0"; // Salto a 22 deseos
-    const versionGuardada = localStorage.getItem('futuro_version');
+    let allWishes = [];
 
-    if (isNaN(deseosCount) || deseosCount < 22 || versionGuardada !== versionActual) {
-        // Guardamos los 22 deseos iniciales si es necesario
-        initialDeseos.forEach((d, i) => {
-            if (!localStorage.getItem(`futuro_p_${i}`) || versionGuardada !== versionActual) {
-                localStorage.setItem(`futuro_p_${i}`, d.p);
-                localStorage.setItem(`futuro_s_${i}`, d.s);
+    // --- CARGA DE DATOS ---
+    async function init() {
+        console.log("Iniciando carga de deseos...");
+        listaDeseos.innerHTML = '<p style="text-align:center; color:white;">Conectando con la nube... ✨</p>';
+
+        try {
+            // 1. Cargar deseos existentes
+            const { data: wishes, error: wishesErr } = await window.supabase
+                .from('wishes')
+                .select('*')
+                .eq('owner_email', SHARED_EMAIL)
+                .order('sort_order', { ascending: true });
+
+            if (wishesErr) throw wishesErr;
+
+            allWishes = wishes || [];
+
+            // 2. Si la tabla está vacía, insertar los 22 iniciales
+            if (allWishes.length === 0) {
+                console.log("Tabla vacía. Insertando deseos iniciales...");
+                const inserts = initialDeseos.map((d, i) => ({
+                    owner_email: SHARED_EMAIL,
+                    sort_order: i,
+                    titulo: d.p,
+                    subtitulo: d.s,
+                    is_done: false
+                }));
+
+                const { data: inserted, error: insertErr } = await window.supabase
+                    .from('wishes')
+                    .insert(inserts)
+                    .select();
+
+                if (insertErr) throw insertErr;
+                allWishes = inserted;
             }
-        });
-        deseosCount = 22;
-        localStorage.setItem('futuro_count', deseosCount);
-        localStorage.setItem('futuro_version', versionActual);
+
+            // 3. Cargar ajustes (título y bloqueo)
+            const { data: settings } = await window.supabase
+                .from('app_settings')
+                .select('*')
+                .eq('owner_email', SHARED_EMAIL);
+            
+            const settingsObj = {};
+            (settings || []).forEach(s => settingsObj[s.key] = s.value);
+
+            if (settingsObj.futuro_titulo) tituloFuturo.textContent = settingsObj.futuro_titulo;
+            if (settingsObj.futuro_locked === 'true') {
+                body.classList.add('locked');
+                btnBloqueo.classList.add('locked');
+            }
+
+            // 4. Renderizar todo
+            renderAll();
+
+        } catch (err) {
+            console.error("ERROR CRÍTICO:", err);
+            listaDeseos.innerHTML = `
+                <div style="color: #ff5e78; text-align: center; padding: 20px;">
+                    <h3>¡Ops! Algo salió mal</h3>
+                    <p>${err.message}</p>
+                    <small>Asegúrate de haber creado las tablas en Supabase.</small>
+                </div>
+            `;
+        }
     }
 
-    renderAllDeseos();
-
-    function renderAllDeseos() {
-        listaDeseos.innerHTML = "";
+    function renderAll() {
+        listaDeseos.innerHTML = '';
         let done = 0;
-        for (let i = 0; i < deseosCount; i++) {
-            const p = localStorage.getItem(`futuro_p_${i}`) || "";
-            const s = localStorage.getItem(`futuro_s_${i}`) || "";
-            const isDone = localStorage.getItem(`futuro_done_${i}`) === 'true';
-            const date = localStorage.getItem(`futuro_date_${i}`) || "";
-            const place = localStorage.getItem(`futuro_place_${i}`) || "";
-
-            if (isDone) done++;
-            crearItemDeseo(i, p, s, isDone, date, place);
-        }
+        allWishes.forEach(wish => {
+            if (wish.is_done) done++;
+            crearItemDeseo(wish);
+        });
         updateCounters(done);
+        
+        // Forzar visibilidad si el IntersectionObserver falla
+        setTimeout(() => {
+            document.querySelectorAll('.deseo-item').forEach(item => {
+                item.classList.add('visible');
+            });
+        }, 500);
     }
 
     function updateCounters(doneCount) {
-        const total = deseosCount;
         countDoneEl.textContent = doneCount;
-        countPendingEl.textContent = Math.max(0, total - doneCount);
+        countPendingEl.textContent = Math.max(0, allWishes.length - doneCount);
     }
 
-    // 2. FUNCIONALIDAD AÑADIR/BLOQUEAR
-    btnAddDeseo.addEventListener('click', () => {
-        if (body.classList.contains('locked')) return;
-
-        const newIndex = deseosCount;
-        localStorage.setItem(`futuro_p_${newIndex}`, "Nuevo deseo compartido");
-        localStorage.setItem(`futuro_s_${newIndex}`, "Haz clic para editar");
-
-        deseosCount++;
-        localStorage.setItem('futuro_count', deseosCount);
-
-        renderAllDeseos();
-
-        const newItem = listaDeseos.lastElementChild;
-        setTimeout(() => newItem.classList.add('visible'), 100);
-    });
-
-    btnBloqueo.addEventListener('click', () => {
-        const locking = !body.classList.contains('locked');
-        body.classList.toggle('locked');
-        btnBloqueo.classList.toggle('locked');
-        localStorage.setItem('futuro_locked', locking);
-
-        btnBloqueo.innerHTML = locking ?
-            '<svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M18,8h-1V6c0-2.76-2.24-5-5-5S7,3.24,7,6v2H6c-1.1,0-2,0.9-2,2v10c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V10C20,8.9,19.1,8,18,8z M9,6c0-1.66,1.34-3,3-3s3,1.34,3,3v2H9V6z"/></svg>' :
-            '<svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12,17c1.1,0,2-0.9,2-2s-0.9-2-2-2s-2,0.9-2,2S10.9,17,12,17z M18,8h-1V6c0-2.76-2.24-5-5-5S7,3.24,7,6v2H6c-1.1,0-2,0.9-2,2v10c0,1.1,0.9,2,2,2h12c1.1,0,2-0.9,2-2V10C20,8.9,19.1,8,18,8z M8.9,8c0-1.71,1.39-3.1,3.1-3.1s3.1,1.39,3.1,3.1v2H8.9V8z"/></svg>';
-    });
-
-    function crearItemDeseo(index, p, s, isDone, date, place) {
+    function crearItemDeseo(wish) {
         const div = document.createElement('div');
-        div.className = `deseo-item ${isDone ? 'cumplido' : ''}`;
+        div.className = `deseo-item ${wish.is_done ? 'cumplido' : ''} visible`; // Añadimos visible por defecto
         div.innerHTML = `
             <button class="btn-delete" title="Eliminar">&times;</button>
             <label class="check-cumplido">
-                <input type="checkbox" ${isDone ? 'checked' : ''}>
+                <input type="checkbox" ${wish.is_done ? 'checked' : ''}>
                 Cumplido
             </label>
-            <h2 class="frase-principal" contenteditable="true">${p}</h2>
-            <span class="frase-secundaria" contenteditable="true">${s}</span>
-            
+            <h2 class="frase-principal" contenteditable="true">${wish.titulo}</h2>
+            <span class="frase-secundaria" contenteditable="true">${wish.subtitulo}</span>
             <div class="meta-cumplido">
-                <div class="meta-field">
-                    <span class="meta-label">Fecha</span>
-                    <input type="text" class="meta-input val-date" placeholder="DD/MM/AAAA" value="${date}">
-                </div>
-                <div class="meta-field">
-                    <span class="meta-label">Lugar</span>
-                    <input type="text" class="meta-input val-place" placeholder="Ciudad, País..." value="${place}">
-                </div>
+                <div class="meta-field"><span class="meta-label">Fecha</span><input type="text" class="meta-input val-date" value="${wish.fecha || ''}"></div>
+                <div class="meta-field"><span class="meta-label">Lugar</span><input type="text" class="meta-input val-place" value="${wish.lugar || ''}"></div>
             </div>
         `;
         listaDeseos.appendChild(div);
 
-        const h2 = div.querySelector('.frase-principal');
-        const span = div.querySelector('.frase-secundaria');
-        const btnDelete = div.querySelector('.btn-delete');
-        const checkbox = div.querySelector('input[type="checkbox"]');
-        const inDate = div.querySelector('.val-date');
-        const inPlace = div.querySelector('.val-place');
+        // Guardar cambios
+        const save = async (update) => {
+            await window.supabase.from('wishes').update(update).eq('id', wish.id);
+        };
 
-        h2.addEventListener('input', () => localStorage.setItem(`futuro_p_${index}`, h2.textContent));
-        span.addEventListener('input', () => localStorage.setItem(`futuro_s_${index}`, span.textContent));
-
-        checkbox.addEventListener('change', () => {
-            const checked = checkbox.checked;
+        div.querySelector('.frase-principal').oninput = (e) => save({ titulo: e.target.textContent });
+        div.querySelector('.frase-secundaria').oninput = (e) => save({ subtitulo: e.target.textContent });
+        div.querySelector('.val-date').oninput = (e) => save({ fecha: e.target.value });
+        div.querySelector('.val-place').oninput = (e) => save({ lugar: e.target.value });
+        
+        div.querySelector('input[type="checkbox"]').onchange = async (e) => {
+            const checked = e.target.checked;
             div.classList.toggle('cumplido', checked);
-            localStorage.setItem(`futuro_done_${index}`, checked);
+            await save({ is_done: checked });
+            renderAll(); // Recargar contadores
+        };
 
-            // Recalcular contadores sin re-renderizar todo
-            let currentDone = parseInt(countDoneEl.textContent);
-            updateCounters(checked ? currentDone + 1 : currentDone - 1);
-        });
-
-        inDate.addEventListener('input', () => localStorage.setItem(`futuro_date_${index}`, inDate.value));
-        inPlace.addEventListener('input', () => localStorage.setItem(`futuro_place_${index}`, inPlace.value));
-
-        btnDelete.addEventListener('click', () => {
-            if (confirm('¿Eliminar esta promesa? (También se eliminará su cuadro en el álbum)')) {
-                // Shift items down to close the gap
-                for (let i = index; i < deseosCount - 1; i++) {
-                    localStorage.setItem(`futuro_p_${i}`, localStorage.getItem(`futuro_p_${i + 1}`));
-                    localStorage.setItem(`futuro_s_${i}`, localStorage.getItem(`futuro_s_${i + 1}`));
-                    localStorage.setItem(`futuro_done_${i}`, localStorage.getItem(`futuro_done_${i + 1}`));
-                    localStorage.setItem(`futuro_date_${i}`, localStorage.getItem(`futuro_date_${i + 1}`));
-                    localStorage.setItem(`futuro_place_${i}`, localStorage.getItem(`futuro_place_${i + 1}`));
-                    localStorage.setItem(`album_foto_${i}`, localStorage.getItem(`album_foto_${i + 1}`));
-                }
-                // Clear the last one
-                localStorage.removeItem(`futuro_p_${deseosCount - 1}`);
-                localStorage.removeItem(`futuro_s_${deseosCount - 1}`);
-                localStorage.removeItem(`futuro_done_${deseosCount - 1}`);
-                localStorage.removeItem(`futuro_date_${deseosCount - 1}`);
-                localStorage.removeItem(`futuro_place_${deseosCount - 1}`);
-                localStorage.removeItem(`album_foto_${deseosCount - 1}`);
-
-                deseosCount--;
-                localStorage.setItem('futuro_count', deseosCount);
-                renderAllDeseos();
+        div.querySelector('.btn-delete').onclick = async () => {
+            if (confirm('¿Borrar?')) {
+                await window.supabase.from('wishes').delete().eq('id', wish.id);
+                allWishes = allWishes.filter(w => w.id !== wish.id);
+                renderAll();
             }
-        });
+        };
     }
 
-    // 3. REVELACIÓN PROGRESIVA (Intersection Observer)
-    const observerOptions = {
-        threshold: 0.2
+    // Botón añadir
+    btnAddDeseo.onclick = async () => {
+        if (body.classList.contains('locked')) return;
+        const { data, error } = await window.supabase.from('wishes').insert({
+            owner_email: SHARED_EMAIL,
+            sort_order: allWishes.length,
+            titulo: 'Nuevo deseo',
+            subtitulo: 'Haz clic para editar'
+        }).select().single();
+        if (data) {
+            allWishes.push(data);
+            renderAll();
+        }
     };
 
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-
-                // Si es el último item de la lista real, mostrar frase de cierre
-                if (entry.target === listaDeseos.lastElementChild) {
-                    setTimeout(() => fraseCierre.classList.add('visible'), 1000);
-                }
-            }
-        });
-    }, observerOptions);
-
-    // Observar items existentes y futuros
-    const observeItems = () => {
-        document.querySelectorAll('.deseo-item').forEach(item => observer.observe(item));
+    // Botón bloqueo
+    btnBloqueo.onclick = async () => {
+        const locking = !body.classList.contains('locked');
+        body.classList.toggle('locked');
+        await window.supabase.from('app_settings').upsert({ 
+            owner_email: SHARED_EMAIL, key: 'futuro_locked', value: locking.toString() 
+        }, { onConflict: 'owner_email,key' });
     };
 
-    observeItems();
-
-    // MutationObserver para observar nuevos items añadidos dinámicamente
-    const mutationObserver = new MutationObserver(observeItems);
-    mutationObserver.observe(listaDeseos, { childList: true });
+    init();
 });

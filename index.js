@@ -53,14 +53,26 @@ function escribirTitulo() {
 let userProfile = null;
 
 // Iniciar
-window.onload = async () => {
+window.addEventListener('load', async () => {
     const userEmail = localStorage.getItem("userEmail");
+    const userAuth = localStorage.getItem("userAuth");
 
-    // 🛡️ VERIFICACIÓN CON SUPABASE
-    if (localStorage.getItem("userAuth") !== "true" || !userEmail) {
+    console.log("Iniciando portal...", { userEmail, userAuth });
+
+    // 🛡️ VERIFICACIÓN BÁSICA
+    if (userAuth !== "true" || !userEmail) {
+        console.warn("Sin sesión, redirigiendo a login...");
         window.location.href = "Login/index.html";
         return;
     }
+
+    // Esperar un momento a que Supabase esté listo por si acaso
+    if (!window.supabase || typeof window.supabase.from !== 'function') {
+        console.log("Esperando a Supabase...");
+        await new Promise(resolve => setTimeout(resolve, 500));
+    }
+
+    const supabase = window.supabase;
 
     try {
         const { data, error } = await supabase
@@ -69,12 +81,36 @@ window.onload = async () => {
             .eq('email', userEmail)
             .single();
 
-        if (error || !data) throw error || new Error("Perfil no encontrado");
+        if (error) {
+            console.error("Error de Supabase:", error);
+            // Si el error es que no existe el perfil, lo creamos
+            if (error.code === 'PGRST116') {
+             console.log("Perfil no existe, intentando crear uno básico...");
+             const { data: newData, error: newErr } = await supabase
+                .from('profiles')
+                .insert({ email: userEmail, progress: 0 })
+                .select()
+                .single();
+             if (newErr) throw newErr;
+             userProfile = newData;
+            } else {
+                throw error;
+            }
+        } else {
+            userProfile = data;
+        }
 
-        userProfile = data;
-
+        console.log("Perfil cargado:", userProfile);
+        
         // Sincronizar UI con datos de Supabase
         indiceActual = Number(userProfile.progress || 0);
+
+        // SI YA COMPLETÓ LA TRIVIA, AL MENÚ
+        if (indiceActual >= preguntas.length) {
+            console.log("Trivia ya completada, saltando al menú...");
+            window.location.href = "Menu/menu.html";
+            return;
+        }
 
         escribirTitulo();
         actualizarProgreso();
@@ -82,12 +118,19 @@ window.onload = async () => {
 
     } catch (e) {
         console.error("Error cargando sesión:", e);
-        logout();
+        // Mostrar error en pantalla en lugar de solo logout para debug
+        titulo.innerHTML = "Error al conectar con la nube ☁️";
+        intro.innerHTML = "Por favor, revisa tu conexión o intenta iniciar sesión de nuevo.<br><br><small>" + e.message + "</small>";
+        
+        setTimeout(() => {
+            // logout(); // Comentado temporalmente para que el usuario vea el error
+        }, 5000);
     }
-};
+});
 
 async function syncProgress() {
     if (!userProfile) return;
+    const supabase = window.supabase;
     await supabase
         .from('profiles')
         .update({ progress: indiceActual })
@@ -300,7 +343,7 @@ function evaluarFinal() {
     setTimeout(() => {
         document.querySelector(".contenedor").classList.add("fade-out-portal");
         setTimeout(() => {
-            window.location.href = "comenzar.html";
+            window.location.href = "Menu/menu.html";
         }, 2500);
     }, 3500);
 }

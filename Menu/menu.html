@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <title>Tus Regalos 💖</title>
     <link rel="stylesheet" href="menu.css">
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../client-supabase.js"></script>
 </head>
 
 <body>
@@ -12,13 +15,43 @@
     <!-- FONDO DECORATIVO -->
     <div class="decoracion-fondo" id="contenedorPetalos"></div>
 
+    <!-- PERFIL DE USUARIO -->
+    <div id="perfil-usuario" class="perfil-container" style="display: none;">
+        <img id="user-photo" src="" alt="Perfil" class="user-photo">
+        <div id="perfil-menu" class="perfil-menu" style="display: none;">
+            <p id="user-email-display" class="user-email-text"></p>
+            <hr class="menu-divider">
+            <button id="btn-options" class="btn-menu">Opciones</button>
+            <button id="btn-logout" class="btn-menu btn-logout-compact">Cerrar Sesión</button>
+        </div>
+    </div>
+
     <!-- MENÚ DE REGALOS (GRID) -->
     <div class="menu-container fade-in">
         <h2 class="menu-titulo">Elige tu siguiente capítulo</h2>
 
         <div class="grid-regalos">
 
-            <!-- Regalo 1 -->
+            <!-- 1. Nuestra Historia -->
+            <a href="../Historia/historia.html" class="tarjeta-regalo enlace-regalo" id="t-historia">
+                <div class="envoltura">
+                    <div class="cinta-v"></div>
+                    <div class="cinta-h"></div>
+                    <div class="mono">
+                        <div class="lazos"></div>
+                    </div>
+                </div>
+                <div class="icon-container">
+                    <svg class="svg-icon" viewBox="0 0 24 24">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                </div>
+                <h3>Nuestra Historia</h3>
+                <p>Donde todo comenzó</p>
+            </a>
+
+            <!-- 2. Es algo que te prometí -->
             <a href="../Video/video.html" class="tarjeta-regalo enlace-regalo" id="t-video">
                 <div class="envoltura">
                     <div class="cinta-v"></div>
@@ -33,49 +66,11 @@
                         <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
                     </svg>
                 </div>
-                <h3>Es algo que te prometí hace mucho tiempo</h3>
-                <p>La cancion que lo cambio todo</p>
+                <h3>Es algo que te prometí</h3>
+                <p>La canción que lo cambió todo</p>
             </a>
 
-            <!-- Regalo 2 -->
-            <a href="../Recuerdos/recuerdos.html" class="tarjeta-regalo enlace-regalo" id="t-recuerdos">
-                <div class="envoltura">
-                    <div class="cinta-v"></div>
-                    <div class="cinta-h"></div>
-                    <div class="mono">
-                        <div class="lazos"></div>
-                    </div>
-                </div>
-                <div class="icon-container">
-                    <svg class="svg-icon" viewBox="0 0 24 24">
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
-                        <circle cx="12" cy="13" r="4" />
-                    </svg>
-                </div>
-                <h3>Nuestros Recuerdos</h3>
-                <p>Instantes inolvidables</p>
-            </a>
-
-            <!-- Regalo 3 -->
-            <a href="../Futuro/futuro.html" class="tarjeta-regalo enlace-regalo" id="t-futuro">
-                <div class="envoltura">
-                    <div class="cinta-v"></div>
-                    <div class="cinta-h"></div>
-                    <div class="mono">
-                        <div class="lazos"></div>
-                    </div>
-                </div>
-                <div class="icon-container">
-                    <svg class="svg-icon" viewBox="0 0 24 24">
-                        <path
-                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                </div>
-                <h3>Lo Que Queremos Vivir</h3>
-                <p>Promesas en el horizonte</p>
-            </a>
-
-            <!-- Regalo 4 -->
+            <!-- 3. Lo que nunca te he dicho -->
             <a href="../Cartas/cartas.html" class="tarjeta-regalo enlace-regalo" id="t-cartas">
                 <div class="envoltura">
                     <div class="cinta-v"></div>
@@ -94,7 +89,45 @@
                 <p>Palabras desde el alma</p>
             </a>
 
-            <!-- Regalo 5 -->
+            <!-- 4. Lo que queremos vivir -->
+            <a href="../Futuro/futuro.html" class="tarjeta-regalo enlace-regalo" id="t-futuro">
+                <div class="envoltura">
+                    <div class="cinta-v"></div>
+                    <div class="cinta-h"></div>
+                    <div class="mono">
+                        <div class="lazos"></div>
+                    </div>
+                </div>
+                <div class="icon-container">
+                    <svg class="svg-icon" viewBox="0 0 24 24">
+                        <path
+                            d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                </div>
+                <h3>Lo Que Queremos Vivir</h3>
+                <p>Promesas en el horizonte</p>
+            </a>
+
+            <!-- 5. Nuestros Recuerdos -->
+            <a href="../Recuerdos/recuerdos.html" class="tarjeta-regalo enlace-regalo" id="t-recuerdos">
+                <div class="envoltura">
+                    <div class="cinta-v"></div>
+                    <div class="cinta-h"></div>
+                    <div class="mono">
+                        <div class="lazos"></div>
+                    </div>
+                </div>
+                <div class="icon-container">
+                    <svg class="svg-icon" viewBox="0 0 24 24">
+                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
+                        <circle cx="12" cy="13" r="4" />
+                    </svg>
+                </div>
+                <h3>Nuestros Recuerdos</h3>
+                <p>Instantes inolvidables</p>
+            </a>
+
+            <!-- 6. Nuestro Tiempo -->
             <a href="../Tiempo/tiempo.html" class="tarjeta-regalo enlace-regalo especial" id="t-tiempo">
                 <div class="envoltura">
                     <div class="cinta-v"></div>
@@ -113,54 +146,61 @@
                 <p>Lento pero seguro</p>
             </a>
 
-            <!-- Decorativo -->
-            <div class="tarjeta-regalo decorativa" id="t-futuro-2">
-                <div class="icon-container">
-                    <svg class="svg-icon" viewBox="0 0 24 24" style="stroke: #555;">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
-                </div>
-                <h3>Próximamente...</h3>
-                <p>Aún por escribir</p>
-            </div>
-
         </div>
     </div>
 
     <script>
-        window.onload = () => {
+        window.onload = async () => {
             const tarjetas = document.querySelectorAll(".tarjeta-regalo");
             const enlaces = document.querySelectorAll(".enlace-regalo");
+            const userEmail = localStorage.getItem("userEmail");
+            const ADMIN_EMAIL = "leandygabin9@gmail.com";
 
-            // 1. Recuperar estados guardados y aplicar animación inicial
+            // 1. Recuperar estados guardados desde Supabase (POR USUARIO INDIVIDUAL)
+            let openedGifts = {};
+            try {
+                const { data: giftSettings } = await window.supabase
+                    .from('app_settings')
+                    .select('*')
+                    .eq('owner_email', userEmail) // Volvemos a userEmail para que sea individual
+                    .like('key', 'regalo_%');
+
+                (giftSettings || []).forEach(s => openedGifts[s.key] = s.value);
+            } catch (err) {
+                console.error("Error cargando regalos:", err);
+            }
+
             enlaces.forEach((enlace, index) => {
                 const idRegalo = enlace.id;
-                if (localStorage.getItem('regalo_' + idRegalo) === 'abierto') {
+                // Si ya estaba abierto, ocultamos el envoltorio inmediatamente
+                if (openedGifts['regalo_' + idRegalo] === 'abierto') {
+                    enlace.classList.add("ya-abierto");
                     enlace.classList.add("abierto");
                 }
 
+                // Asegurar que siempre se vuelvan visibles
                 setTimeout(() => {
                     enlace.classList.add("tarjeta-visible");
-                }, index * 150);
+                }, index * 100);
             });
 
-            // Mostrar el decorativo al final
-            setTimeout(() => {
-                document.getElementById("t-futuro-2").classList.add("tarjeta-visible");
-            }, enlaces.length * 150);
+            // Las tarjetas se vuelven visibles en el bucle anterior
 
 
-            // 2. Lógica para abrir regalos (Dos pasos + Persistencia)
+            // 2. Lógica para abrir regalos (Individual por usuario)
             enlaces.forEach(enlace => {
-                enlace.addEventListener("click", function (e) {
+                enlace.addEventListener("click", async function (e) {
                     if (!this.classList.contains("abierto")) {
-                        // PRIMER CLICK: Abrir y guardar estado
+                        // PRIMER CLICK: Abrir y guardar para el usuario actual
                         e.preventDefault();
                         this.classList.add("abierto");
-                        localStorage.setItem('regalo_' + this.id, 'abierto');
-                    } else {
-                        // SEGUNDO CLICK: Navegar
+                        
+                        await window.supabase.from('app_settings').upsert({
+                            owner_email: userEmail, // Guardamos para el usuario actual
+                            key: 'regalo_' + this.id,
+                            value: 'abierto'
+                        }, { onConflict: 'owner_email,key' });
+
                     }
                 });
             });
@@ -183,6 +223,50 @@
             }
             setInterval(crearPetalo, 400);
             for (let i = 0; i < 15; i++) crearPetalo(); // Pétalos iniciales
+
+            if (userEmail) {
+                cargarDatosPerfil(userEmail);
+            }
+
+            async function cargarDatosPerfil(email) {
+                const { data: userProfile, error } = await window.supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('email', email)
+                    .single();
+
+                if (userProfile) {
+                    const perfilDiv = document.getElementById("perfil-usuario");
+                    const userPhoto = document.getElementById("user-photo");
+                    const perfilMenu = document.getElementById("perfil-menu");
+                    const userEmailDisplay = document.getElementById("user-email-display");
+                    const btnOptions = document.getElementById("btn-options");
+
+                    userPhoto.src = userProfile.picture;
+                    perfilDiv.style.display = "block";
+
+                    userPhoto.onclick = (e) => {
+                        e.stopPropagation();
+                        userEmailDisplay.innerText = userProfile.email;
+                        const isVisible = perfilMenu.style.display === "block";
+                        perfilMenu.style.display = isVisible ? "none" : "block";
+                    };
+
+                    document.addEventListener("click", () => perfilMenu.style.display = "none");
+
+                    if (userProfile.email === ADMIN_EMAIL) {
+                        btnOptions.style.display = "block";
+                        btnOptions.onclick = () => window.location.href = "../Admin/index.html";
+                    } else {
+                        btnOptions.style.display = "none";
+                    }
+
+                    document.getElementById("btn-logout").onclick = () => {
+                        localStorage.clear();
+                        window.location.href = "../Login/index.html";
+                    };
+                }
+            }
         };
     </script>
 
