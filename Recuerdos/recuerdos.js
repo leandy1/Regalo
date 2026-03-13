@@ -16,9 +16,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mosaicoDeseos = document.getElementById('mosaicoDeseos');
     const mosaicoFotos = document.getElementById('mosaicoFotos');
 
-    // Email compartido (fuente de verdad compartida)
+    // Email compartido para que ambos vean lo mismo
     const SHARED_EMAIL = 'leandygabin9@gmail.com';
-    const STORAGE_BUCKET = 'album-photos'; // Nombre del bucket en Supabase Storage
+    const CURRENT_USER = localStorage.getItem("userEmail");
+    const STORAGE_BUCKET = 'album-photos';
 
     let currentIndex = 0;
     let allWishes = [];
@@ -170,8 +171,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const publicUrl = urlData.publicUrl;
 
-            // Guardar URL en la tabla wishes
-            await window.supabase.from('wishes').update({ photo_url: publicUrl }).eq('id', wish.id);
+            // Guardar URL y autor en la tabla wishes
+            await window.supabase.from('wishes').update({ 
+                photo_url: publicUrl,
+                created_by: CURRENT_USER // Guardamos quién subió la foto
+            }).eq('id', wish.id);
             wish.photo_url = publicUrl;
 
             img.src = publicUrl;
@@ -280,6 +284,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             .from('album_photos')
             .insert({
                 owner_email: SHARED_EMAIL,
+                created_by: CURRENT_USER, // Identificamos al creador
                 sort_order: newOrder,
                 caption: `Momento #${newOrder + 1}`,
                 photo_url: null,

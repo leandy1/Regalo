@@ -8,8 +8,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const countDoneEl = document.getElementById('countDone');
     const countPendingEl = document.getElementById('countPending');
 
-    // Email compartido para la base de datos
+    // Email compartido para que ambos vean lo mismo
     const SHARED_EMAIL = 'leandygabin9@gmail.com';
+    const CURRENT_USER = localStorage.getItem("userEmail");
 
     const initialDeseos = [
         { p: "1. Ir a la playa al atardecer", s: "Un cielo de colores frente al mar." },
@@ -60,6 +61,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.log("Tabla vacía. Insertando deseos iniciales...");
                 const inserts = initialDeseos.map((d, i) => ({
                     owner_email: SHARED_EMAIL,
+                    created_by: 'sistema', // Los iniciales son del sistema
                     sort_order: i,
                     titulo: d.p,
                     subtitulo: d.s,
@@ -147,7 +149,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Guardar cambios
         const save = async (update) => {
-            await window.supabase.from('wishes').update(update).eq('id', wish.id);
+            await window.supabase.from('wishes').update({
+                ...update,
+                created_by: CURRENT_USER // Marcamos quién hizo la última edición
+            }).eq('id', wish.id);
         };
 
         div.querySelector('.frase-principal').oninput = (e) => save({ titulo: e.target.textContent });
@@ -176,6 +181,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (body.classList.contains('locked')) return;
         const { data, error } = await window.supabase.from('wishes').insert({
             owner_email: SHARED_EMAIL,
+            created_by: CURRENT_USER, // Quién creó este nuevo deseo
             sort_order: allWishes.length,
             titulo: 'Nuevo deseo',
             subtitulo: 'Haz clic para editar'
