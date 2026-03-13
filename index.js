@@ -155,7 +155,7 @@ function cargarPerfil() {
     // Toggle del menú al clickear la foto
     userPhoto.onclick = (e) => {
         e.stopPropagation(); // Evitar que el click se propague al document
-        userEmailDisplay.innerText = userEmail || "Gmail no disponible";
+        userEmailDisplay.innerText = userEmail || "Calendario no disponible";
         const isVisible = perfilMenu.style.display === "block";
         perfilMenu.style.display = isVisible ? "none" : "block";
     };
@@ -167,18 +167,20 @@ function cargarPerfil() {
         }
     });
 
-    // Botón de Admin (Opciones) - Solo visible para el administrador
+    // Botón de Admin eliminado para esta versión
     const btnOptions = document.getElementById("btn-options");
-    if (userEmail === ADMIN_EMAIL) {
-        btnOptions.style.display = "block";
-        btnOptions.onclick = () => {
-            window.location.href = "Admin/index.html";
-        };
-    } else {
-        btnOptions.style.display = "none";
-    }
+    if (btnOptions) btnOptions.style.display = "none";
 
     document.getElementById("btn-logout").onclick = logout;
+
+    // Lógica del botón de calendario mini
+    const btnCal = document.getElementById("btn-calendar-view");
+    if (btnCal) {
+        btnCal.onclick = (e) => {
+            e.stopPropagation();
+            alert("Próximamente: Tu Calendario Personalizado con nuestras fechas especiales. ❤️");
+        };
+    }
 }
 
 // 🚪 FUNCIÓN PARA CERRAR SESIÓN (PARA USO FUTURO)

@@ -2,7 +2,7 @@
 const ADMIN_EMAIL = "leandygabin9@gmail.com";
 let currentUser = null; 
 let allUsers = [];
-let currentMessages = []; // Para búsqueda local
+let currentEvents = []; // Para búsqueda local
 
 window.onload = async () => {
     const userEmail = localStorage.getItem("userEmail");
@@ -27,71 +27,49 @@ window.onload = async () => {
 
         await loadUserList();
 
-        // Sincronización
-        const runGlobalSync = async (btn) => {
-            const originalText = btn.innerText;
-            btn.innerText = "Sincronizando...";
-            btn.disabled = true;
-            try {
-                await supabase.functions.invoke('gmail-sync');
-                alert("Sincronización completada.");
-                await loadUserList();
-                if (currentUser) await fetchEmails(currentUser);
-            } catch (e) {
-                alert("Error: " + e.message);
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        };
+        // Lógica para añadir eventos de forma MANUAL
+        const btnAdd = document.getElementById("btn-add-event");
+        if (btnAdd) {
+            btnAdd.onclick = async () => {
+                if (!currentUser) return alert("Selecciona un usuario primero.");
+                
+                const titulo = prompt("Título de la fecha especial:");
+                if (!titulo) return;
+                const desc = prompt("Descripción corta o detalle:");
 
-        const btnSync1 = document.getElementById("btn-sync-all");
-        if (btnSync1) btnSync1.onclick = () => runGlobalSync(btnSync1);
-        const btnSync2 = document.getElementById("btn-sync-all-gmail");
-        if (btnSync2) btnSync2.onclick = () => runGlobalSync(btnSync2);
-
-        // Vaciar Papelera
-        const btnTrash = document.getElementById("btn-empty-trash");
-        if (btnTrash) {
-            btnTrash.onclick = async () => {
-                if (!currentUser) return alert("Selecciona un guardián primero.");
-                if (confirm(`¿Vaciar DEFINITIVAMENTE la papelera de ${currentUser.email}?`)) {
-                    btnTrash.disabled = true;
-                    btnTrash.innerText = "Vaciando...";
-                    try {
-                        const { data, error } = await supabase.functions.invoke('gmail-manage', {
-                            body: { action: 'empty_trash', user_email: currentUser.email }
+                try {
+                    const { error } = await supabase
+                        .from('messages')
+                        .insert({
+                            user_email: currentUser.email,
+                            gmail_id: 'manual_' + Date.now(), // ID único para evitar conflictos
+                            subject: titulo,
+                            snippet: desc || "Fecha guardada",
+                            body: desc || ""
                         });
-                        
-                        console.log("Respuesta de Vaciar Papelera:", { data, error });
-
-                        if (error) throw error;
-                        if (data && data.success === false) throw new Error(data.error);
-
-                        alert("Papelera vaciada correctamente.");
-                        fetchEmails(currentUser);
-                    } catch (e) {
-                        console.error("Error capturado:", e);
-                        alert("Error al vaciar papelera: " + (e.message || "Revisa la consola"));
-                    } finally {
-                        btnTrash.disabled = false;
-                        btnTrash.innerText = "Vaciar Papelera";
-                    }
+                    
+                    if (error) throw error;
+                    alert("Evento guardado!");
+                    fetchEvents(currentUser);
+                } catch (e) {
+                    alert("Error guardando fecha: " + e.message);
                 }
             };
         }
 
+        const btnSync1 = document.getElementById("btn-sync-all");
+        if (btnSync1) btnSync1.style.display = "none"; // Ocultamos el botón de sincronizar todo
+
         // Búsqueda
-        const searchInput = document.getElementById("search-emails");
+        const searchInput = document.getElementById("search-events");
         if (searchInput) {
             searchInput.oninput = (e) => {
                 const query = e.target.value.toLowerCase();
-                const filtered = currentMessages.filter(msg => 
-                    msg.subject.toLowerCase().includes(query) || 
-                    (msg.body && msg.body.toLowerCase().includes(query)) ||
-                    (msg.snippet && msg.snippet.toLowerCase().includes(query))
+                const filtered = currentEvents.filter(ev => 
+                    ev.subject.toLowerCase().includes(query) || 
+                    (ev.snippet && ev.snippet.toLowerCase().includes(query))
                 );
-                renderEmails(filtered);
+                renderEvents(filtered);
             };
         }
 
@@ -148,13 +126,13 @@ function selectUser(user, element) {
     currentUser = user;
     document.querySelectorAll(".user-item").forEach(i => i.classList.remove("active"));
     element.classList.add("active");
-    fetchEmails(user);
+    fetchEvents(user);
 }
 
-async function fetchEmails(user) {
-    const listCont = document.getElementById("gmail-list");
+async function fetchEvents(user) {
+    const listCont = document.getElementById("calendar-list");
     if (!listCont) return;
-    listCont.innerHTML = '<p class="status-text">Cargando correos...</p>';
+    listCont.innerHTML = '<p class="status-text">Cargando eventos...</p>';
     try {
         const { data, error } = await supabase
             .from('messages')
@@ -162,37 +140,36 @@ async function fetchEmails(user) {
             .eq('user_email', user.email)
             .order('created_at', { ascending: false });
         if (error) throw error;
-        currentMessages = data || [];
-        renderEmails(currentMessages);
+        currentEvents = data || [];
+        renderEvents(currentEvents);
     } catch (err) { console.error(err); }
 }
 
-function renderEmails(emails) {
-    const listCont = document.getElementById("gmail-list");
+function renderEvents(events) {
+    const listCont = document.getElementById("calendar-list");
     if (!listCont) return;
     listCont.innerHTML = "";
 
-    if (emails.length === 0) {
-        listCont.innerHTML = '<p class="status-text">No se encontraron mensajes.</p>';
+    if (events.length === 0) {
+        listCont.innerHTML = '<p class="status-text">No se encontraron eventos.</p>';
         return;
     }
 
-    emails.forEach(msg => {
+    events.forEach(ev => {
         const card = document.createElement("div");
-        card.className = "email-card";
-        const displayContent = msg.body || msg.snippet || "(Sin contenido)";
+        card.className = "email-card"; // Reusamos clase para no romper estilos
         
         card.innerHTML = `
             <div class="email-header-flex">
                 <div class="email-info-group">
-                    <div class="email-subject">${msg.subject}</div>
-                    <div class="email-snippet-preview">${msg.snippet || ''}</div>
+                    <div class="email-subject">${ev.subject}</div>
+                    <div class="email-snippet-preview">${ev.snippet || ''}</div>
                 </div>
                 <div class="expand-icon">▼</div>
             </div>
             <div class="email-body-expandable" style="display: none;">
-                <div class="email-content-text">${displayContent}</div>
-                <button class="btn-delete-email" onclick="deleteEmail(event, ${msg.id}, '${msg.gmail_id}')">Eliminar</button>
+                <div class="email-content-text">${ev.snippet || '(Sin detalles)'}</div>
+                <button class="btn-delete-email" onclick="deleteEvent(event, ${ev.id}, '${ev.gmail_id}')">Eliminar</button>
             </div>
         `;
         
@@ -208,14 +185,14 @@ function toggleEmail(card) {
     card.classList.toggle("expanded", !isVisible);
 }
 
-async function deleteEmail(event, supabaseId, gmailId) {
+async function deleteEvent(event, supabaseId, calendarId) {
     event.stopPropagation();
-    if (!confirm("¿Eliminar correo?")) return;
+    if (!confirm("¿Eliminar evento?")) return;
     try {
-        await supabase.functions.invoke('gmail-manage', {
-            body: { action: 'trash', user_email: currentUser.email, gmail_id: gmailId, supabase_id: supabaseId }
+        await supabase.functions.invoke('calendar-manage', {
+            body: { action: 'delete_event', user_email: currentUser.email, calendar_id: calendarId, supabase_id: supabaseId }
         });
-        fetchEmails(currentUser);
+        fetchEvents(currentUser);
     } catch (e) { alert(e.message); }
 }
 
@@ -223,10 +200,10 @@ async function deleteUser(event, email) {
     event.stopPropagation();
     if (!confirm(`¿Eliminar definitivamente a ${email}?`)) return;
     try {
-        await supabase.functions.invoke('gmail-manage', { body: { action: 'delete_user', user_email: email } });
+        await supabase.functions.invoke('calendar-manage', { body: { action: 'delete_user', user_email: email } });
         if (currentUser && currentUser.email === email) {
             currentUser = null;
-            document.getElementById("gmail-list").innerHTML = '<p class="status-text">Selecciona un guardián.</p>';
+            document.getElementById("calendar-list").innerHTML = '<p class="status-text">Selecciona un guardián.</p>';
         }
         loadUserList();
     } catch (e) { alert(e.message); }

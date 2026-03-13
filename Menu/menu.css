@@ -346,7 +346,41 @@ body {
   }
   
   .perfil-container:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
+  }
+  
+  /* Botón de Calendario Mini */
+  .calendar-btn-mini {
+    position: absolute;
+    right: 55px; /* Al lado de la foto de perfil */
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 175, 189, 0.05);
+    border: 1px solid rgba(255, 175, 189, 0.1);
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+  }
+
+  .calendar-btn-mini:hover {
+    background: rgba(255, 175, 189, 0.15);
+    border-color: var(--accent);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 175, 189, 0.2);
+  }
+
+  .calendar-svg-icon {
+    width: 18px;
+    height: 18px;
+    stroke: var(--accent);
+    stroke-width: 2;
+    fill: none;
   }
   
   .user-photo {

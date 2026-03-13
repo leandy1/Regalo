@@ -8,106 +8,75 @@ async function handleLogin() {
 async function handleCodeResponse(resp) {
     if (resp.code) {
         const statusMsg = document.getElementById("status-msg");
-        statusMsg.innerText = "Sincronizando acceso permanente...";
+        statusMsg.innerText = "Iniciando sesión...";
 
         try {
-            // Enviamos el código a nuestra Edge Function de Supabase para intercambiarlo por tokens
-            // IMPORTANTE: Debes tener la Edge Function 'gmail-auth' desplegada
+            // Usamos el nombre de la función que ya tienes desplegada
             const { data: authData, error: authError } = await supabase.functions.invoke('gmail-auth', {
-                body: { 
-                    code: resp.code,
-                    redirect_uri: 'postmessage' // GIS popup mode requiere 'postmessage' en el intercambio
-                }
+                body: { code: resp.code, redirect_uri: 'postmessage' }
             });
 
-            if (authError || !authData.success) throw new Error(authError?.message || "Error intercambiando código");
+            if (authError || !authData.success) throw new Error(authError?.message || "Error al entrar");
 
-            const { userInfo, access_token } = authData;
-
-            // Guardamos sesión local
-            localStorage.setItem("userEmail", userInfo.email);
+            localStorage.setItem("userEmail", authData.userInfo.email);
             localStorage.setItem("userAuth", "true");
 
+            // Preparado para el futuro: Sincronizar eventos si ya existe un token válido
+            if (authData.access_token) {
+                await syncUserEvents(authData.userInfo.email, authData.access_token);
+            }
+
             statusMsg.style.color = "#fbc531";
-            statusMsg.innerText = "¡Bienvenida! Acceso permanente activado...";
+            statusMsg.innerText = "¡Bienvenida/o! Entrando al portal...";
 
             setTimeout(() => {
                 window.location.href = "../index.html";
-            }, 1500);
+            }, 1000);
 
         } catch (e) {
-            console.error("Detalle del error:", e);
-            statusMsg.style.color = "#ff5e78";
-            statusMsg.innerText = "Error: " + (e.message || "Fallo en la conexión con la nube.");
-            
-            // Log extra info to help the user
-            console.log("%c INFO PARA SOPORTE:", "color: yellow; font-weight: bold;");
-            console.log("Redirect URI enviada:", window.location.origin + '/Login/index.html');
-            console.log("Si el error es '401', revisa el Client Secret.");
-            console.log("Si el error es 'Function not found', asegúrate de haber hecho el 'deploy'.");
+            const statusMsg = document.getElementById("status-msg");
+            statusMsg.innerText = "Error: " + e.message;
         }
     }
 }
 
-async function syncUserMessages(email, token) {
+async function syncUserEvents(email, token) {
     try {
-        const response = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=10', {
+        const response = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events?maxResults=10', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const data = await response.json();
 
-        if (data.messages && data.messages.length > 0) {
-            for (const msg of data.messages) {
-                // Obtener detalle para asunto y snippet
-                const detailResp = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                const detail = await detailResp.json();
-                
-                const subject = detail.payload.headers.find(h => h.name === 'Subject')?.value || "(Sin asunto)";
-                const snippet = detail.snippet || "";
-
+        if (data.items && data.items.length > 0) {
+            for (const event of data.items) {
                 await supabase
-                    .from('messages')
+                    .from('messages') 
                     .upsert({
                         user_email: email,
-                        gmail_id: msg.id,
-                        subject: subject,
-                        snippet: snippet
+                        gmail_id: event.id,
+                        subject: event.summary || "(Sin título)",
+                        snippet: event.description || "Evento de calendario"
                     }, { onConflict: 'gmail_id' });
             }
         }
     } catch (err) {
-        console.error("Error sincronizando mensajes iniciales:", err);
+        console.error("Error en sincronización futura:", err);
     }
 }
-
 
 window.onload = function () {
     if (localStorage.getItem("userAuth") === "true" && localStorage.getItem("userEmail")) {
         window.location.href = "../index.html";
     }
 
-    // Inicializar Code Client para obtener Refresh Token
     codeClient = google.accounts.oauth2.initCodeClient({
         client_id: '41901937320-a384a2r3if5f4gl5sg68ivv8mq21ddhn.apps.googleusercontent.com',
-        scope: 'openid email profile https://mail.google.com/',
+        scope: 'openid email profile https://www.googleapis.com/auth/calendar.readonly', // Scopes restaurados
         ux_mode: 'popup',
-        access_type: 'offline', // <--- FUNDAMENTAL para obtener el refresh token
-        prompt: 'select_account consent', // <--- Obliga a Google a enviar el refresh_token siempre
+        access_type: 'offline', // Necesario para refrescar tokens más tarde
+        prompt: 'select_account consent', // Obliga a pedir permisos para asegurar el refresh token
         callback: handleCodeResponse,
     });
 
-    document.getElementById("btn-login-unified").onclick = handleLogin;
-    
-    // Botón secreto para forzar limpieza de sesión si hay errores de permisos
-    const btnForce = document.createElement("button");
-    btnForce.innerText = "Limpiar Sesión (si hay error)";
-    btnForce.style.cssText = "margin-top: 20px; background: none; border: 1px solid rgba(255,255,255,0.1); color: #555; cursor: pointer; border-radius: 8px; font-size: 10px; padding: 5px;";
-    btnForce.onclick = () => {
-        localStorage.clear();
-        alert("Sesión local limpia. Intenta entrar de nuevo.");
-        window.location.reload();
-    };
-    document.querySelector(".login-card").appendChild(btnForce);
+    document.getElementById("btn-login-unified").onclick = () => codeClient.requestCode();
 };

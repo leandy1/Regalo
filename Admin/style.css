@@ -148,8 +148,8 @@ body::before {
   text-overflow: ellipsis;
 }
 
-/* Emails Section */
-.gmail-section {
+/* Calendar Section */
+.calendar-section {
   min-width: 0;
 }
 
@@ -203,10 +203,10 @@ body::before {
   box-shadow: 0 5px 15px rgba(255, 94, 120, 0.3);
 }
 
-.gmail-list {
+.calendar-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 120px;
 }
 
 .email-card {

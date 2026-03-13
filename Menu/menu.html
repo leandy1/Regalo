@@ -17,6 +17,14 @@
 
     <!-- PERFIL DE USUARIO -->
     <div id="perfil-usuario" class="perfil-container" style="display: none;">
+        <div class="calendar-btn-mini" id="btn-calendar-view" title="Calendario Especial">
+            <svg class="calendar-svg-icon" viewBox="0 0 24 24">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="16" y1="2" x2="16" y2="6"></line>
+                <line x1="8" y1="2" x2="8" y2="6"></line>
+                <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+        </div>
         <img id="user-photo" src="" alt="Perfil" class="user-photo">
         <div id="perfil-menu" class="perfil-menu" style="display: none;">
             <p id="user-email-display" class="user-email-text"></p>
@@ -254,17 +262,22 @@
 
                     document.addEventListener("click", () => perfilMenu.style.display = "none");
 
-                    if (userProfile.email === ADMIN_EMAIL) {
-                        btnOptions.style.display = "block";
-                        btnOptions.onclick = () => window.location.href = "../Admin/index.html";
-                    } else {
-                        btnOptions.style.display = "none";
-                    }
+                    // Botón de Admin oculto
+                    if (btnOptions) btnOptions.style.display = "none";
 
                     document.getElementById("btn-logout").onclick = () => {
                         localStorage.clear();
                         window.location.href = "../Login/index.html";
                     };
+
+                    // Lógica del botón de calendario mini
+                    const btnCal = document.getElementById("btn-calendar-view");
+                    if (btnCal) {
+                        btnCal.onclick = (e) => {
+                            e.stopPropagation();
+                            alert("Próximamente: Tu Calendario Personalizado con nuestras fechas especiales. ❤️");
+                        };
+                    }
                 }
             }
         };
