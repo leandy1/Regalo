@@ -11,8 +11,8 @@ async function handleCodeResponse(resp) {
         statusMsg.innerText = "Iniciando sesión...";
 
         try {
-            // Usamos el nombre de la función que ya tienes desplegada
-            const { data: authData, error: authError } = await supabase.functions.invoke('gmail-auth', {
+            // Usamos la nueva función específica para calendario
+            const { data: authData, error: authError } = await supabase.functions.invoke('calendar-auth', {
                 body: { code: resp.code, redirect_uri: 'postmessage' }
             });
 
