@@ -149,6 +149,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Guardar cambios
         const save = async (update) => {
+            Object.assign(wish, update); // ACTUALIZACIÓN LOCAL: Para que renderAll use el dato nuevo
             await window.supabase.from('wishes').update({
                 ...update,
                 created_by: CURRENT_USER // Marcamos quién hizo la última edición
@@ -164,7 +165,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const checked = e.target.checked;
             div.classList.toggle('cumplido', checked);
             await save({ is_done: checked });
-            renderAll(); // Recargar contadores
+            renderAll(); // Recargar contadores con la data ya actualizada en el objeto wish
         };
 
         div.querySelector('.btn-delete').onclick = async () => {
