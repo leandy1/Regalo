@@ -124,14 +124,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 500);
     }
 
-    function updateCounters(doneCount) {
+    function updateCounters() {
+        let doneCount = 0;
+        allWishes.forEach(w => { if (w.is_done) doneCount++; });
         countDoneEl.textContent = doneCount;
         countPendingEl.textContent = Math.max(0, allWishes.length - doneCount);
     }
 
     function crearItemDeseo(wish) {
         const div = document.createElement('div');
-        div.className = `deseo-item ${wish.is_done ? 'cumplido' : ''} visible`; // Añadimos visible por defecto
+        div.className = `deseo-item ${wish.is_done ? 'cumplido' : ''} visible`;
         div.innerHTML = `
             <button class="btn-delete" title="Eliminar">&times;</button>
             <label class="check-cumplido">
@@ -147,12 +149,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
         listaDeseos.appendChild(div);
 
-        // Guardar cambios
         const save = async (update) => {
-            Object.assign(wish, update); // ACTUALIZACIÓN LOCAL: Para que renderAll use el dato nuevo
+            Object.assign(wish, update);
             await window.supabase.from('wishes').update({
                 ...update,
-                created_by: CURRENT_USER // Marcamos quién hizo la última edición
+                created_by: CURRENT_USER
             }).eq('id', wish.id);
         };
 
@@ -164,8 +165,14 @@ document.addEventListener('DOMContentLoaded', async () => {
         div.querySelector('input[type="checkbox"]').onchange = async (e) => {
             const checked = e.target.checked;
             div.classList.toggle('cumplido', checked);
-            await save({ is_done: checked });
-            renderAll(); // Recargar contadores con la data ya actualizada en el objeto wish
+            wish.is_done = checked; // Actualizamos el estado en el objeto local
+            updateCounters(); // Actualizamos los números de arriba inmediatamente
+            
+            // Guardamos en Supabase sin llamar a renderAll() para evitar el refresh visual
+            await window.supabase.from('wishes').update({
+                is_done: checked,
+                created_by: CURRENT_USER
+            }).eq('id', wish.id);
         };
 
         div.querySelector('.btn-delete').onclick = async () => {
